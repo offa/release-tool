@@ -1,3 +1,4 @@
+import os
 import re
 
 class CMakeProject():
@@ -29,7 +30,7 @@ class CMakeProject():
 
 
     def _load_file(self, path, file):
-        with open("{}/{}".format(path, file)) as f:
+        with open(os.path.join(path, file)) as f:
             return f.read()
         return None
 
