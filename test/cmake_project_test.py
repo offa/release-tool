@@ -9,13 +9,13 @@ class TestCMakeProject(unittest.TestCase):
         proj = CMakeProject('x')
         self.assertEqual(proj.name(), None)
         self.assertEqual(proj.current_version(), None)
+        self.assertEqual(proj.path(), 'x')
 
 
     def test_load_reads_data(self):
-        path = 'x/proj-a'
         content = 'cmake_minimum_required(VERSION 3.14)\n\n' \
             'project(TestProj VERSION 1.41.5)\n\n'
-        proj = CMakeProject(path)
+        proj = CMakeProject('x/proj-a')
 
         with patch.object(proj, '_load_file', return_value=content) as m:
             proj.load()
@@ -23,7 +23,7 @@ class TestCMakeProject(unittest.TestCase):
             self.assertEqual(proj.current_version(), '1.41.5')
             self.assertEqual(proj.name(), 'TestProj')
 
-            m.assert_called_with(path, 'CMakeLists.txt')
+            m.assert_called_with(proj.path(), 'CMakeLists.txt')
 
 
     def test_store_writes_data(self):
@@ -37,7 +37,7 @@ class TestCMakeProject(unittest.TestCase):
             with patch.object(proj, '_store_file') as m:
                 proj.store()
 
-                m.assert_called_with('x', 'CMakeLists.txt', content.format('1.9.10'))
+                m.assert_called_with(proj.path(), 'CMakeLists.txt', content.format('1.9.10'))
 
 
     def test_current_version(self):

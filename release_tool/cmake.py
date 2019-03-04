@@ -26,6 +26,10 @@ class CMakeProject():
         self._store_file(self.__proj_dir, 'CMakeLists.txt', result)
 
 
+    def path(self):
+        return self.__proj_dir
+
+
     def name(self):
         return self.__name
 
