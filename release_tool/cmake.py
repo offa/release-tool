@@ -2,6 +2,7 @@ import os
 import re
 
 class CMakeProject():
+    __PATTERN = 'project\\((.+?) VERSION (.+?)\\)'
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
@@ -27,7 +28,7 @@ class CMakeProject():
 
     def load(self):
         content = self._load_file(self.__proj_dir, 'CMakeLists.txt')
-        m = re.search('project\\((.+?) VERSION (.+?)\\)', content)
+        m = re.search(self.__PATTERN, content)
 
         self.__name = (m.group(1))
         self.set_version(m.group(2))
@@ -35,7 +36,7 @@ class CMakeProject():
 
     def store(self):
         content = self._load_file(self.__proj_dir, 'CMakeLists.txt')
-        result = re.sub('project\\((.+?) VERSION (.+?)\\)',
+        result = re.sub(self.__PATTERN,
                         r'project(\1 VERSION {})'
                             .format(self.current_version()), content)
 
