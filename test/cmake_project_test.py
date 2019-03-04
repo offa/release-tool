@@ -4,6 +4,8 @@ from unittest.mock import patch
 
 
 class TestCMakeProject(unittest.TestCase):
+    CMAKE_CONTENT = 'cmake_minimum_required(VERSION 3.14)\n\n' \
+            'project(TestProj VERSION {})\n\n'
 
     def test_default_values(self):
         proj = CMakeProject('x')
@@ -13,11 +15,9 @@ class TestCMakeProject(unittest.TestCase):
 
 
     def test_load_reads_data(self):
-        content = 'cmake_minimum_required(VERSION 3.14)\n\n' \
-            'project(TestProj VERSION 1.41.5)\n\n'
         proj = CMakeProject('x/proj-a')
 
-        with patch.object(proj, '_load_file', return_value=content) as m:
+        with patch.object(proj, '_load_file', return_value=self.CMAKE_CONTENT.format('1.41.5')) as m:
             proj.load()
 
             self.assertEqual(proj.current_version(), '1.41.5')
@@ -30,14 +30,11 @@ class TestCMakeProject(unittest.TestCase):
         proj = self.__mock_load()
         proj.set_version('1.9.10')
 
-        content = 'cmake_minimum_required(VERSION 3.14)\n\n' \
-            'project(TestProj VERSION {})\n\n'
-
-        with patch.object(proj, '_load_file', return_value=content.format('0.0.1')) as m:
+        with patch.object(proj, '_load_file', return_value=self.CMAKE_CONTENT.format('0.0.1')) as m:
             with patch.object(proj, '_store_file') as m:
                 proj.store()
 
-                m.assert_called_with(proj.path(), 'CMakeLists.txt', content.format('1.9.10'))
+                m.assert_called_with(proj.path(), 'CMakeLists.txt', self.CMAKE_CONTENT.format('1.9.10'))
 
 
     def test_current_version(self):
@@ -56,9 +53,8 @@ class TestCMakeProject(unittest.TestCase):
 
     def __mock_load(self):
         proj = CMakeProject('x')
-        content = 'project(TestProj VERSION 0.1.2)\n\n'
 
-        with patch.object(proj, '_load_file', return_value=content):
+        with patch.object(proj, '_load_file', return_value=self.CMAKE_CONTENT.format('0.1.2')):
             proj.load()
 
         return proj
