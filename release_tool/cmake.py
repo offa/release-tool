@@ -36,9 +36,8 @@ class CMakeProject():
 
     def store(self):
         content = self._load_file(self.__proj_dir, 'CMakeLists.txt')
-        result = re.sub(self.__PATTERN,
-                        r'project(\1 VERSION {})'
-                            .format(self.current_version()), content)
+        updated = r'project(\1 VERSION {})'.format(self.current_version())
+        result = re.sub(self.__PATTERN, updated, content)
 
         self._store_file(self.__proj_dir, 'CMakeLists.txt', result)
 
