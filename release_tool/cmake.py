@@ -17,6 +17,15 @@ class CMakeProject():
         self.set_version(m.group(2))
 
 
+    def store(self):
+        content = self._load_file(self.__proj_dir, 'CMakeLists.txt')
+        result = re.sub('project\\((.+?) VERSION (.+?)\\)',
+                        r'project(\1 VERSION {})'
+                            .format(self.current_version()), content)
+
+        self._store_file(self.__proj_dir, 'CMakeLists.txt', result)
+
+
     def name(self):
         return self.__name
 
@@ -33,5 +42,9 @@ class CMakeProject():
         with open(os.path.join(path, file)) as f:
             return f.read()
         return None
+
+    def _store_file(self, path, file, content):
+        with open(os.path.join(path, file), 'w') as f:
+            f.write(content)
 
 

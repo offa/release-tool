@@ -11,6 +11,14 @@ class CMakeProjectIT(unittest.TestCase):
         self.assertEqual(proj.current_version(), '1.8.9')
 
 
+    def test_update_project_file(self):
+        proj = CMakeProject('test/it/data')
+        proj.load()
+
+        proj.set_version('2.1.0')
+        proj.store()
+
+
 
 if __name__ == '__main__':
     unittest.main()

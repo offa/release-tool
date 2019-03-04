@@ -26,6 +26,20 @@ class TestCMakeProject(unittest.TestCase):
             m.assert_called_with(path, 'CMakeLists.txt')
 
 
+    def test_store_writes_data(self):
+        proj = self.__mock_load()
+        proj.set_version('1.9.10')
+
+        content = 'cmake_minimum_required(VERSION 3.14)\n\n' \
+            'project(TestProj VERSION {})\n\n'
+
+        with patch.object(proj, '_load_file', return_value=content.format('0.0.1')) as m:
+            with patch.object(proj, '_store_file') as m:
+                proj.store()
+
+                m.assert_called_with('x', 'CMakeLists.txt', content.format('1.9.10'))
+
+
     def test_current_version(self):
         proj = self.__mock_load()
 
