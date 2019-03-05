@@ -36,7 +36,7 @@ class CMakeProject():
 
 
     def version(self):
-        return self.__version;
+        return self.__version
 
 
     def project_config(self):
