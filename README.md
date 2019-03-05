@@ -4,3 +4,12 @@
 [![GitHub release](https://img.shields.io/github/release/offa/release-tool.svg)](https://github.com/offa/release-tool/releases)
 [![License](https://img.shields.io/badge/license-GPLv3-yellow.svg)](LICENSE)
 ![C++](https://img.shields.io/badge/python-3-green.svg)
+
+Tool to create project releases.
+
+1. Check for uncommitted files
+1. Update version info
+1. Update Repository
+    1. Commit version change
+    1. Tag new version
+
