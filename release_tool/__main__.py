@@ -40,9 +40,9 @@ def main():
 
     # Commit
     repo.index.add(["CMakeLists.txt"])
-    repo.index.commit("Release v{}".format(proj.current_version()))
+    repo.index.commit("Release v{}".format(proj.version()))
     # Tag
-    repo.create_tag("v{}".format(proj.current_version()), message="Release v{}".format(proj.current_version()))
+    repo.create_tag("v{}".format(proj.version()), message="Release v{}".format(proj.version()))
 
 
     # Done
