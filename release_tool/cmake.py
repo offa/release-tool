@@ -18,8 +18,12 @@ class CMakeProject():
         return self.__name
 
 
-    def current_version(self):
+    def version(self):
         return self.__version;
+
+
+    def project_config(self):
+        return 'CMakeLists.txt'
 
 
     def set_version(self, new_version):
@@ -36,7 +40,7 @@ class CMakeProject():
 
     def store(self):
         content = self._load_file(self.__proj_dir, 'CMakeLists.txt')
-        updated = r'project(\1 VERSION {})'.format(self.current_version())
+        updated = r'project(\1 VERSION {})'.format(self.version())
         result = re.sub(self.__PATTERN, updated, content)
 
         self._store_file(self.__proj_dir, 'CMakeLists.txt', result)

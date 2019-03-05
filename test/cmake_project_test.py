@@ -12,6 +12,7 @@ class TestCMakeProject(unittest.TestCase):
         self.assertEqual(proj.name(), None)
         self.assertEqual(proj.version(), None)
         self.assertEqual(proj.path(), 'x')
+        self.assertEqual(proj.project_config(), 'CMakeLists.txt')
 
 
     def test_load_reads_data(self):
