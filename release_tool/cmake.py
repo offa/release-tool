@@ -48,7 +48,7 @@ class CMakeProject():
 
 
     def load(self):
-        content = self._load_file(self.__proj_dir, 'CMakeLists.txt')
+        content = self._load_file(self.__proj_dir, self.project_config())
         m = re.search(self.__PATTERN, content)
 
         self.__name = (m.group(1))
@@ -56,11 +56,11 @@ class CMakeProject():
 
 
     def store(self):
-        content = self._load_file(self.__proj_dir, 'CMakeLists.txt')
+        content = self._load_file(self.__proj_dir, self.project_config())
         updated = r'project(\1 VERSION {})'.format(self.version())
         result = re.sub(self.__PATTERN, updated, content)
 
-        self._store_file(self.__proj_dir, 'CMakeLists.txt', result)
+        self._store_file(self.__proj_dir, self.project_config(), result)
 
 
     def _load_file(self, path, file):
