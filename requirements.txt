@@ -1,0 +1,5 @@
+# Runtime
+GitPython==2.1.11
+
+# Test
+pytest==4.3.0
