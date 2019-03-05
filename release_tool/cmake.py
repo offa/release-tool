@@ -72,5 +72,3 @@ class CMakeProject():
     def _store_file(self, path, file, content):
         with open(os.path.join(path, file), 'w') as f:
             f.write(content)
-
-
