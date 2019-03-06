@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from release_tool.cmake import CMakeProject
 import unittest
 from unittest.mock import patch
+from release_tool.cmake import CMakeProject
 
 
 class TestCMakeProject(unittest.TestCase):
