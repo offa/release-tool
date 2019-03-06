@@ -36,31 +36,34 @@ class CMakeProject():
     def version(self):
         return self.__version
 
-    def project_config(self):
+    @staticmethod
+    def project_config():
         return 'CMakeLists.txt'
 
     def set_version(self, new_version):
         self.__version = new_version
 
     def load(self):
-        content = self._load_file(self.__proj_dir, self.project_config())
+        content = _load_file(self.__proj_dir, self.project_config())
         match = re.search(self.__PATTERN, content)
 
         self.__name = (match.group(1))
         self.set_version(match.group(2))
 
     def store(self):
-        content = self._load_file(self.__proj_dir, self.project_config())
+        content = _load_file(self.__proj_dir, self.project_config())
         updated = r'project(\1 VERSION {})'.format(self.version())
         result = re.sub(self.__PATTERN, updated, content)
 
-        self._store_file(self.__proj_dir, self.project_config(), result)
+        _store_file(self.__proj_dir, self.project_config(), result)
 
-    def _load_file(self, path, filename):
-        with open(os.path.join(path, filename)) as file:
-            return file.read()
-        return None
 
-    def _store_file(self, path, filename, content):
-        with open(os.path.join(path, filename), 'w') as file:
-            file.write(content)
+def _load_file(path, filename):
+    with open(os.path.join(path, filename)) as file:
+        return file.read()
+    return None
+
+
+def _store_file(path, filename, content):
+    with open(os.path.join(path, filename), 'w') as file:
+        file.write(content)

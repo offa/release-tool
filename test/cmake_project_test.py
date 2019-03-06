@@ -19,10 +19,11 @@ import unittest
 from unittest.mock import patch
 from release_tool.cmake import CMakeProject
 
+CMAKE_CONTENT = 'cmake_minimum_required(VERSION 3.14)\n\n' \
+    'project(TestProj VERSION {})\n\n'
+
 
 class TestCMakeProject(unittest.TestCase):
-    CMAKE_CONTENT = 'cmake_minimum_required(VERSION 3.14)\n\n' \
-        'project(TestProj VERSION {})\n\n'
 
     def test_default_values(self):
         proj = CMakeProject('x')
@@ -31,29 +32,26 @@ class TestCMakeProject(unittest.TestCase):
         self.assertEqual(proj.path(), 'x')
         self.assertEqual(proj.project_config(), 'CMakeLists.txt')
 
-    def test_load_reads_data(self):
+    @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('1.41.5'))
+    def test_load_reads_data(self, mock_load_file):
         proj = CMakeProject('x/proj-a')
 
-        with patch.object(proj, '_load_file',
-                          return_value=self.CMAKE_CONTENT.format('1.41.5')) as mock:
-            proj.load()
+        proj.load()
 
-            self.assertEqual(proj.version(), '1.41.5')
-            self.assertEqual(proj.name(), 'TestProj')
+        self.assertEqual(proj.version(), '1.41.5')
+        self.assertEqual(proj.name(), 'TestProj')
 
-            mock.assert_called_with(proj.path(), 'CMakeLists.txt')
+        mock_load_file.assert_called_with(proj.path(), 'CMakeLists.txt')
 
-    def test_store_writes_data(self):
+    @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
+    @patch('release_tool.cmake._store_file')
+    def test_store_writes_data(self, mock_load_file, mock_store_file):
         proj = self.__mock_load()
         proj.set_version('1.9.10')
+        proj.store()
 
-        with patch.object(proj, '_load_file',
-                          return_value=self.CMAKE_CONTENT.format('0.0.1')) as mock:
-            with patch.object(proj, '_store_file') as mock:
-                proj.store()
-
-                mock.assert_called_with(proj.path(), 'CMakeLists.txt',
-                                        self.CMAKE_CONTENT.format('1.9.10'))
+        mock_load_file.assert_called_with(proj.path(), 'CMakeLists.txt',
+                                          CMAKE_CONTENT.format('1.9.10'))
 
     def test_current_version(self):
         proj = self.__mock_load()
@@ -67,11 +65,10 @@ class TestCMakeProject(unittest.TestCase):
         proj.set_version('1.3.4')
         self.assertEqual(proj.version(), '1.3.4')
 
-    def __mock_load(self):
+    @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2'))
+    def __mock_load(self, mock):
         proj = CMakeProject('x')
-
-        with patch.object(proj, '_load_file', return_value=self.CMAKE_CONTENT.format('0.1.2')):
-            proj.load()
+        proj.load()
 
         return proj
 
