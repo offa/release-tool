@@ -46,7 +46,7 @@ class TestCMakeProject(unittest.TestCase):
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
     @patch('release_tool.cmake._store_file')
     def test_store_writes_data(self, mock_load_file, mock_store_file):
-        proj = self.__mock_load()
+        proj = _mock_load()
         proj.set_version('1.9.10')
         proj.store()
 
@@ -54,23 +54,24 @@ class TestCMakeProject(unittest.TestCase):
                                           CMAKE_CONTENT.format('1.9.10'))
 
     def test_current_version(self):
-        proj = self.__mock_load()
+        proj = _mock_load()
 
         self.assertEqual(proj.version(), '0.1.2')
 
     def test_set_new_version(self):
-        proj = self.__mock_load()
+        proj = _mock_load()
 
         self.assertEqual(proj.version(), '0.1.2')
         proj.set_version('1.3.4')
         self.assertEqual(proj.version(), '1.3.4')
 
-    @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2'))
-    def __mock_load(self, mock):
-        proj = CMakeProject('x')
-        proj.load()
 
-        return proj
+@patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2'))
+def _mock_load(mock):
+    proj = CMakeProject('x')
+    proj.load()
+
+    return proj
 
 
 if __name__ == '__main__':
