@@ -49,10 +49,10 @@ class CMakeProject():
 
     def load(self):
         content = self._load_file(self.__proj_dir, self.project_config())
-        m = re.search(self.__PATTERN, content)
+        match = re.search(self.__PATTERN, content)
 
-        self.__name = (m.group(1))
-        self.set_version(m.group(2))
+        self.__name = (match.group(1))
+        self.set_version(match.group(2))
 
 
     def store(self):
@@ -63,12 +63,12 @@ class CMakeProject():
         self._store_file(self.__proj_dir, self.project_config(), result)
 
 
-    def _load_file(self, path, file):
-        with open(os.path.join(path, file)) as f:
-            return f.read()
+    def _load_file(self, path, filename):
+        with open(os.path.join(path, filename)) as file:
+            return file.read()
         return None
 
 
-    def _store_file(self, path, file, content):
-        with open(os.path.join(path, file), 'w') as f:
-            f.write(content)
+    def _store_file(self, path, filename, content):
+        with open(os.path.join(path, filename), 'w') as file:
+            file.write(content)

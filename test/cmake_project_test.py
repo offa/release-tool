@@ -35,24 +35,24 @@ class TestCMakeProject(unittest.TestCase):
     def test_load_reads_data(self):
         proj = CMakeProject('x/proj-a')
 
-        with patch.object(proj, '_load_file', return_value=self.CMAKE_CONTENT.format('1.41.5')) as m:
+        with patch.object(proj, '_load_file', return_value=self.CMAKE_CONTENT.format('1.41.5')) as mock:
             proj.load()
 
             self.assertEqual(proj.version(), '1.41.5')
             self.assertEqual(proj.name(), 'TestProj')
 
-            m.assert_called_with(proj.path(), 'CMakeLists.txt')
+            mock.assert_called_with(proj.path(), 'CMakeLists.txt')
 
 
     def test_store_writes_data(self):
         proj = self.__mock_load()
         proj.set_version('1.9.10')
 
-        with patch.object(proj, '_load_file', return_value=self.CMAKE_CONTENT.format('0.0.1')) as m:
-            with patch.object(proj, '_store_file') as m:
+        with patch.object(proj, '_load_file', return_value=self.CMAKE_CONTENT.format('0.0.1')) as mock:
+            with patch.object(proj, '_store_file') as mock:
                 proj.store()
 
-                m.assert_called_with(proj.path(), 'CMakeLists.txt', self.CMAKE_CONTENT.format('1.9.10'))
+                mock.assert_called_with(proj.path(), 'CMakeLists.txt', self.CMAKE_CONTENT.format('1.9.10'))
 
 
     def test_current_version(self):
