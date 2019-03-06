@@ -45,7 +45,7 @@ class TestCMakeProject(unittest.TestCase):
 
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
     @patch('release_tool.cmake._store_file')
-    def test_store_writes_data(self, mock_load_file, mock_store_file):
+    def test_store_writes_data(self, mock_load_file, _mock_store_file):
         proj = _mock_load()
         proj.set_version('1.9.10')
         proj.store()
