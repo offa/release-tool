@@ -18,6 +18,7 @@
 import os
 import re
 
+
 class CMakeProject():
     __PATTERN = 'project\\((.+?) VERSION (.+?)\\)'
 
@@ -26,26 +27,20 @@ class CMakeProject():
         self.__version = None
         self.__name = None
 
-
     def path(self):
         return self.__proj_dir
-
 
     def name(self):
         return self.__name
 
-
     def version(self):
         return self.__version
-
 
     def project_config(self):
         return 'CMakeLists.txt'
 
-
     def set_version(self, new_version):
         self.__version = new_version
-
 
     def load(self):
         content = self._load_file(self.__proj_dir, self.project_config())
@@ -54,7 +49,6 @@ class CMakeProject():
         self.__name = (match.group(1))
         self.set_version(match.group(2))
 
-
     def store(self):
         content = self._load_file(self.__proj_dir, self.project_config())
         updated = r'project(\1 VERSION {})'.format(self.version())
@@ -62,12 +56,10 @@ class CMakeProject():
 
         self._store_file(self.__proj_dir, self.project_config(), result)
 
-
     def _load_file(self, path, filename):
         with open(os.path.join(path, filename)) as file:
             return file.read()
         return None
-
 
     def _store_file(self, path, filename, content):
         with open(os.path.join(path, filename), 'w') as file:

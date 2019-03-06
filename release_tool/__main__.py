@@ -68,7 +68,6 @@ def update_scm(repo, proj, new_version):
     repo.create_tag("v{}".format(new_version), message=commit_message)
 
 
-
 def main():
     args = parse_args()
 
@@ -78,7 +77,6 @@ def main():
     check_precondition(repo, proj, new_version)
     update_version_config(proj, new_version)
     update_scm(repo, proj, new_version)
-
 
 
 if __name__ == '__main__':
