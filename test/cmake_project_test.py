@@ -50,6 +50,7 @@ class TestCMakeProject(unittest.TestCase):
         proj.set_version('1.9.10')
         proj.store()
 
+        self.assertEqual(proj.version(), '1.9.10')
         mock_load_file.assert_called_with(proj.path(), 'CMakeLists.txt',
                                           CMAKE_CONTENT.format('1.9.10'))
 
