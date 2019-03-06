@@ -67,7 +67,7 @@ class TestCMakeProject(unittest.TestCase):
 
 
 @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2'))
-def _mock_load(mock):
+def _mock_load():
     proj = CMakeProject('x')
     proj.load()
 
