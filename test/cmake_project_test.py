@@ -67,12 +67,12 @@ class TestCMakeProject(unittest.TestCase):
         self.assertEqual(proj.version(), '1.3.4')
 
 
-@patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2'))
 def _mock_load():
-    proj = CMakeProject('x')
-    proj.load()
+    with patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2')):
+        proj = CMakeProject('x')
+        proj.load()
 
-    return proj
+        return proj
 
 
 if __name__ == '__main__':
