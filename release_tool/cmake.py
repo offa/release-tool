@@ -20,7 +20,7 @@ import re
 
 
 class CMakeProject():
-    __PATTERN = 'project\\((.+?) VERSION (.+?)\\)'
+    __PATTERN = r'project\s*\(\s*(.+?)\s+VERSION\s+(.+?)\s*\)'
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
@@ -70,4 +70,3 @@ def _load_file(path, filename):
 def _store_file(path, filename, content):
     with open(os.path.join(path, filename), 'w') as file:
         file.write(content)
-

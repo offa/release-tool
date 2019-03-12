@@ -39,6 +39,15 @@ class TestCMakeProject(unittest.TestCase):
         self.assertEqual(name, 'TestProj')
         self.assertEqual(version, '1.23.456')
 
+    def test_parse_project_config_handles_whitespaces(self):
+        content_ws = 'cmake_minimum_required(VERSION 3.14)\n\n' \
+            '  \n \t project  (\n\n\t TestProj \n  \nVERSION \n {})\n\n'
+        proj = CMakeProject('abc')
+        name, version = proj.parse_project_config(content_ws.format('395.18.20'))
+
+        self.assertEqual(name, 'TestProj')
+        self.assertEqual(version, '395.18.20')
+
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('1.41.5'))
     def test_load_reads_data(self, mock_load_file):
         proj = CMakeProject('x/proj-a')
