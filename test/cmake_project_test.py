@@ -32,6 +32,13 @@ class TestCMakeProject(unittest.TestCase):
         self.assertEqual(proj.path(), 'x')
         self.assertEqual(proj.project_config(), 'CMakeLists.txt')
 
+    def test_parse_project_config_parses_values(self):
+        proj = CMakeProject('abc')
+        name, version = proj.parse_project_config(CMAKE_CONTENT.format('1.23.456'))
+
+        self.assertEqual(name, 'TestProj')
+        self.assertEqual(version, '1.23.456')
+
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('1.41.5'))
     def test_load_reads_data(self, mock_load_file):
         proj = CMakeProject('x/proj-a')

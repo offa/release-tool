@@ -45,10 +45,13 @@ class CMakeProject():
 
     def load(self):
         content = _load_file(self.__proj_dir, self.project_config())
-        match = re.search(self.__PATTERN, content)
+        self.__name, self.__version = self.parse_project_config(content)
 
-        self.__name = (match.group(1))
-        self.set_version(match.group(2))
+    def parse_project_config(self, input_string):
+        match = re.search(self.__PATTERN, input_string)
+        name = match.group(1)
+        version = match.group(2)
+        return (name, version)
 
     def store(self):
         content = _load_file(self.__proj_dir, self.project_config())
@@ -67,3 +70,4 @@ def _load_file(path, filename):
 def _store_file(path, filename, content):
     with open(os.path.join(path, filename), 'w') as file:
         file.write(content)
+
