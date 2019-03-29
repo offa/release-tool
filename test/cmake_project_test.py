@@ -41,7 +41,7 @@ class TestCMakeProject(unittest.TestCase):
 
     def test_parse_project_config_handles_whitespaces(self):
         content_ws = 'cmake_minimum_required(VERSION 3.14)\n\n' \
-            '  \n \t project  (\n\n\t TestProj \n  \nVERSION \n {})\n\n'
+            '  \n \t project  (\n\n\t TestProj \n  \nVERSION \n {} \n)\n\n'
         proj = CMakeProject('abc')
         name, version = proj.parse_project_config(content_ws.format('395.18.20'))
 
