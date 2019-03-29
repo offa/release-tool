@@ -20,7 +20,7 @@ import re
 
 
 class CMakeProject():
-    __PATTERN = r'project\s*\(\s*(.+?)\s+VERSION\s+(.+?)\s*\)'
+    __PATTERN = r'project\s*\(\s*(\S+?)\s+(?:\S+\s+)*VERSION\s+(\S+?)\s*(?:\s+\S+?)*\)'
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
