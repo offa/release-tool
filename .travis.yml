@@ -13,4 +13,4 @@ install:
 
 script:
   - pytest
-  - pylint release_tool test -j4
+  - pylint release_tool test *.py -j4
