@@ -13,7 +13,7 @@ setuptools.setup(
     description='Tool to create project releases.',
     long_description=long_description_readme(),
     url='https://github.com/offa/release-tool',
-    packages=setuptools.find_packages(),
+    packages=['release_tool'],
     keywords=['project', 'release', 'cmake', 'git'],
     classifiers=[
         'Development Status :: 3 - Alpha',
