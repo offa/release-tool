@@ -21,5 +21,6 @@ setuptools.setup(
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Topic :: Software Development',
         'Topic :: Utilities',
-    ]
+    ],
+    install_requires=['GitPython']
 )
