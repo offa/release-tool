@@ -18,6 +18,7 @@
 import sys
 import argparse
 import git
+from version import __version__
 from cmake import CMakeProject
 
 
@@ -28,7 +29,7 @@ def parse_args():
     required.add_argument('--release-version', '-r', type=str, required=True,
                           help='Version to release')
 
-    parser.add_argument('--version', '-v', action='version', version="%(prog)s 0.0.1",
+    parser.add_argument('--version', '-v', action='version', version="%(prog)s {}".format(__version__),
                         help='Shows the program version')
     parser.add_argument("path", nargs=1)
 

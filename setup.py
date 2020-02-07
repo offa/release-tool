@@ -1,4 +1,5 @@
 import setuptools
+from release_tool.version import __version__
 
 def long_description_readme():
     with open("README.md", "r") as readme_file:
@@ -7,7 +8,7 @@ def long_description_readme():
 
 setuptools.setup(
     name='release-tool',
-    version='0.0.1',
+    version=__version__,
     author='offa',
     author_email='offa@github',
     description='Tool to create project releases.',
