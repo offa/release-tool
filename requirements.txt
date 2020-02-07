@@ -2,9 +2,9 @@
 GitPython==3.0.5
 
 # Test
-pytest==5.0.1
-pylint==2.3.1
+pytest==5.3.5
+pylint==2.4.4
 
 
 # Formatting
-autopep8==1.4.4
+autopep8==1.5
