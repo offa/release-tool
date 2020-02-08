@@ -28,8 +28,8 @@ def parse_args():
     required = parser.add_argument_group('arguments')
     required.add_argument('--release-version', '-r', type=str, required=True,
                           help='Version to release')
-
-    parser.add_argument('--version', '-v', action='version', version="%(prog)s {}".format(__version__),
+    parser.add_argument('--version', '-v', action='version',
+                        version="%(prog)s {}".format(__version__),
                         help='Shows the program version')
     parser.add_argument("path", nargs=1)
 
