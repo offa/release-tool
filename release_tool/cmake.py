@@ -55,8 +55,11 @@ class CMakeProject():
 
     def store(self):
         content = _load_file(self.__proj_dir, self.project_config())
-        updated = r'project(\1 VERSION {})'.format(self.version())
-        result = re.sub(self.__PATTERN, updated, content)
+        pattern = r'project\((.+?)\)'
+        match = re.search(pattern, content)
+        project_args = match.group(1).split()
+        project_args[project_args.index("VERSION") + 1] = self.version()
+        result = re.sub(pattern, "project({})".format(" ".join(project_args)), content)
 
         _store_file(self.__proj_dir, self.project_config(), result)
 

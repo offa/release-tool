@@ -79,6 +79,20 @@ class TestCMakeProject(unittest.TestCase):
         mock_store_file.assert_called_with(proj.path(), 'CMakeLists.txt',
                                            CMAKE_CONTENT.format('1.9.10'))
 
+    @patch('release_tool.cmake._store_file')
+    def test_store_keeps_existing_values(self, mock_store_file):
+        proj = _mock_load()
+        proj.set_version('1.9.10')
+
+        cmake_content_extended = 'cmake_minimum_required(VERSION 3.14)\n' \
+            'project(TestProj LANGUAGES CXX VERSION {} DESCRIPTION "Additional values here")'
+
+        with patch('release_tool.cmake._load_file', return_value=cmake_content_extended.format('0.1.2')):
+            proj.store()
+
+        mock_store_file.assert_called_with(proj.path(), 'CMakeLists.txt',
+                                           cmake_content_extended.format('1.9.10'))
+
     def test_current_version(self):
         proj = _mock_load()
 
