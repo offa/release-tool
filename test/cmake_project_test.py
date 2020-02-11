@@ -68,16 +68,16 @@ class TestCMakeProject(unittest.TestCase):
 
         mock_load_file.assert_called_with(proj.path(), 'CMakeLists.txt')
 
-    @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
     @patch('release_tool.cmake._store_file')
-    def test_store_writes_data(self, mock_load_file, _mock_store_file):
+    @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
+    def test_store_writes_data(self, _mock_load_file, mock_store_file):
         proj = _mock_load()
         proj.set_version('1.9.10')
         proj.store()
 
         self.assertEqual(proj.version(), '1.9.10')
-        mock_load_file.assert_called_with(proj.path(), 'CMakeLists.txt',
-                                          CMAKE_CONTENT.format('1.9.10'))
+        mock_store_file.assert_called_with(proj.path(), 'CMakeLists.txt',
+                                           CMAKE_CONTENT.format('1.9.10'))
 
     def test_current_version(self):
         proj = _mock_load()
