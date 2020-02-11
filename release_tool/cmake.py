@@ -20,7 +20,7 @@ import re
 
 
 class CMakeProject():
-    __PATTERN = r'project\s*\(\s*(\S+?)\s+(?:\S+\s+)*VERSION\s+(\S+?)\s*(?:\s+\S+?)*\)'
+    __PATTERN = r'project\s*\((.+?)\)'
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
@@ -48,18 +48,19 @@ class CMakeProject():
         self.__name, self.__version = self.parse_project_config(content)
 
     def parse_project_config(self, input_string):
-        match = re.search(self.__PATTERN, input_string)
-        name = match.group(1)
-        version = match.group(2)
+        match = re.search(self.__PATTERN, input_string, re.DOTALL)
+        project_args = match.group(1).split()
+        name = project_args[0]
+        version = project_args[project_args.index("VERSION") + 1]
+
         return (name, version)
 
     def store(self):
         content = _load_file(self.__proj_dir, self.project_config())
-        pattern = r'project\((.+?)\)'
-        match = re.search(pattern, content)
+        match = re.search(self.__PATTERN, content, re.DOTALL)
         project_args = match.group(1).split()
         project_args[project_args.index("VERSION") + 1] = self.version()
-        result = re.sub(pattern, "project({})".format(" ".join(project_args)), content)
+        result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)), content)
 
         _store_file(self.__proj_dir, self.project_config(), result)
 
