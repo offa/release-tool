@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
 import argparse
 import os
 import git
@@ -24,6 +23,10 @@ from cmake import CMakeProject
 
 
 class UnsupportedProjectException(Exception):
+    pass
+
+
+class ConditionFailedException(Exception):
     pass
 
 
@@ -43,8 +46,7 @@ def parse_args():
 
 def ensure_condition(condition, message):
     if not condition:
-        print("{}".format(message))
-        sys.exit(1)
+        raise ConditionFailedException(message)
 
 
 def project_contains_file(path, filename):
