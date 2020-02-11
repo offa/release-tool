@@ -17,9 +17,14 @@
 
 import sys
 import argparse
+import os
 import git
 from version import __version__
 from cmake import CMakeProject
+
+
+class UnsupportedProjectException(Exception):
+    pass
 
 
 def parse_args():
@@ -42,12 +47,20 @@ def ensure_condition(condition, message):
         sys.exit(1)
 
 
+def project_contains_file(path, filename):
+    return os.path.isfile(os.path.join(path, filename))
+
+
 def init(path):
     repo = git.Repo(path)
-    proj = CMakeProject(path)
-    proj.load()
 
-    return repo, proj
+    if project_contains_file(path, CMakeProject.project_config()):
+        proj = CMakeProject(path)
+        proj.load()
+        return repo, proj
+    else:
+        raise UnsupportedProjectException(
+            "'{}' does not contain a supported project type".format(path))
 
 
 def check_precondition(repo, proj, new_version):
