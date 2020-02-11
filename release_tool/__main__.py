@@ -58,9 +58,7 @@ def init(path):
         proj = CMakeProject(path)
         proj.load()
         return repo, proj
-    else:
-        raise UnsupportedProjectException(
-            "'{}' does not contain a supported project type".format(path))
+    raise UnsupportedProjectException("'{}' does not contain a supported project type".format(path))
 
 
 def check_precondition(repo, proj, new_version):
