@@ -18,8 +18,8 @@
 import sys
 import argparse
 import git
-from .version import __version__
-from .cmake import CMakeProject
+from version import __version__
+from cmake import CMakeProject
 
 
 def parse_args():
