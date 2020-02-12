@@ -24,7 +24,7 @@ class CMakeProject():
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
-        self.__version = None
+        self.version = None
         self.__name = None
 
     def path(self):
@@ -33,19 +33,13 @@ class CMakeProject():
     def name(self):
         return self.__name
 
-    def version(self):
-        return self.__version
-
     @staticmethod
     def project_config():
         return 'CMakeLists.txt'
 
-    def set_version(self, new_version):
-        self.__version = new_version
-
     def load(self):
         content = _load_file(self.__proj_dir, self.project_config())
-        self.__name, self.__version = self.parse_project_config(content)
+        self.__name, self.version = self.parse_project_config(content)
 
     def parse_project_config(self, input_string):
         match = re.search(self.__PATTERN, input_string, re.DOTALL)
@@ -59,7 +53,7 @@ class CMakeProject():
         content = _load_file(self.__proj_dir, self.project_config())
         match = re.search(self.__PATTERN, content, re.DOTALL)
         project_args = match.group(1).split()
-        project_args[project_args.index("VERSION") + 1] = self.version()
+        project_args[project_args.index("VERSION") + 1] = self.version
         result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)), content)
 
         _store_file(self.__proj_dir, self.project_config(), result)
