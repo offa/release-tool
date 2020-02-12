@@ -56,7 +56,7 @@ def project_contains_file(path, filename):
 def init(path):
     repo = git.Repo(path)
 
-    if project_contains_file(path, CMakeProject.project_config()):
+    if project_contains_file(path, CMakeProject.PROJECT_CONFIG):
         proj = CMakeProject(path)
         proj.load()
         return repo, proj
@@ -74,7 +74,7 @@ def update_version_config(proj, new_version):
 
 
 def update_scm(repo, proj, new_version):
-    repo.index.add([proj.project_config()])
+    repo.index.add([proj.PROJECT_CONFIG])
     ensure_condition(repo.is_dirty(), 'No changes to commit')
 
     commit_message = "Release v{}".format(new_version)

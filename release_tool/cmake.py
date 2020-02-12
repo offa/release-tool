@@ -18,9 +18,9 @@
 import os
 import re
 
-
 class CMakeProject():
     __PATTERN = r'project\s*\((.+?)\)'
+    PROJECT_CONFIG = "CMakeLists.txt"
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
@@ -33,12 +33,8 @@ class CMakeProject():
     def name(self):
         return self.__name
 
-    @staticmethod
-    def project_config():
-        return 'CMakeLists.txt'
-
     def load(self):
-        content = _load_file(self.__proj_dir, self.project_config())
+        content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
         self.__name, self.version = self.parse_project_config(content)
 
     def parse_project_config(self, input_string):
@@ -50,13 +46,13 @@ class CMakeProject():
         return (name, version)
 
     def store(self):
-        content = _load_file(self.__proj_dir, self.project_config())
+        content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
         match = re.search(self.__PATTERN, content, re.DOTALL)
         project_args = match.group(1).split()
         project_args[project_args.index("VERSION") + 1] = self.version
         result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)), content)
 
-        _store_file(self.__proj_dir, self.project_config(), result)
+        _store_file(self.__proj_dir, self.PROJECT_CONFIG, result)
 
 
 def _load_file(path, filename):

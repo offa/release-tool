@@ -30,7 +30,6 @@ class TestCMakeProject(unittest.TestCase):
         self.assertEqual(proj.name(), None)
         self.assertEqual(proj.version, None)
         self.assertEqual(proj.path(), 'x')
-        self.assertEqual(proj.project_config(), 'CMakeLists.txt')
 
     def test_parse_project_config_parses_values(self):
         proj = CMakeProject('abc')
