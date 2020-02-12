@@ -27,9 +27,9 @@ class TestCMakeProject(unittest.TestCase):
 
     def test_default_values(self):
         proj = CMakeProject('x')
-        self.assertEqual(proj.name(), None)
+        self.assertEqual(proj.name, None)
         self.assertEqual(proj.version, None)
-        self.assertEqual(proj.path(), 'x')
+        self.assertEqual(proj.path, 'x')
 
     def test_parse_project_config_parses_values(self):
         proj = CMakeProject('abc')
@@ -63,9 +63,9 @@ class TestCMakeProject(unittest.TestCase):
         proj.load()
 
         self.assertEqual(proj.version, '1.41.5')
-        self.assertEqual(proj.name(), 'TestProj')
+        self.assertEqual(proj.name, 'TestProj')
 
-        mock_load_file.assert_called_with(proj.path(), 'CMakeLists.txt')
+        mock_load_file.assert_called_with(proj.path, 'CMakeLists.txt')
 
     @patch('release_tool.cmake._store_file')
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
@@ -75,7 +75,7 @@ class TestCMakeProject(unittest.TestCase):
         proj.store()
 
         self.assertEqual(proj.version, '1.9.10')
-        mock_store_file.assert_called_with(proj.path(), 'CMakeLists.txt',
+        mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            CMAKE_CONTENT.format('1.9.10'))
 
     @patch('release_tool.cmake._store_file')
@@ -91,7 +91,7 @@ class TestCMakeProject(unittest.TestCase):
             proj.store()
 
         self.assertEqual(proj.version, '4.8.2')
-        mock_store_file.assert_called_with(proj.path(), 'CMakeLists.txt',
+        mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            cmake_content_extended.format('4.8.2'))
 
     def test_current_version(self):

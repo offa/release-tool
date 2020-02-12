@@ -18,6 +18,7 @@
 import os
 import re
 
+
 class CMakeProject():
     __PATTERN = r'project\s*\((.+?)\)'
     PROJECT_CONFIG = "CMakeLists.txt"
@@ -27,9 +28,11 @@ class CMakeProject():
         self.version = None
         self.__name = None
 
+    @property
     def path(self):
         return self.__proj_dir
 
+    @property
     def name(self):
         return self.__name
 
@@ -55,7 +58,6 @@ class CMakeProject():
     def __parse_project_arguments(self, input_string):
         match = re.search(self.__PATTERN, input_string, re.DOTALL)
         return match.group(1).split()
-
 
 
 def _load_file(path, filename):
