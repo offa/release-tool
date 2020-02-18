@@ -25,7 +25,7 @@ class CMakeProject():
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
-        self.load()
+        self.__load()
 
     @property
     def path(self):
@@ -35,17 +35,16 @@ class CMakeProject():
     def name(self):
         return self.__name
 
-    def load(self):
-        content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
-        self.__name, self.version = self.__parse_project_config(content)
-
     def store(self):
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
         project_args = self.__parse_project_arguments(content)
         project_args[project_args.index("VERSION") + 1] = self.version
         result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)), content)
-
         _store_file(self.__proj_dir, self.PROJECT_CONFIG, result)
+
+    def __load(self):
+        content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
+        self.__name, self.version = self.__parse_project_config(content)
 
     def __parse_project_config(self, input_string):
         project_args = self.__parse_project_arguments(input_string)
