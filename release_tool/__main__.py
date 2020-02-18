@@ -64,11 +64,11 @@ def init(path):
 
 def check_precondition(repo, proj, new_version):
     ensure_condition(not repo.is_dirty(), 'The project contains uncommited changes')
-    ensure_condition(proj.version() != new_version, "Version already up-to-date")
+    ensure_condition(proj.version != new_version, "Version already up-to-date")
 
 
 def update_version_config(proj, new_version):
-    proj.set_version(new_version)
+    proj.version = new_version
     proj.store()
 
 
