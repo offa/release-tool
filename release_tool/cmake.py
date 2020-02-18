@@ -38,14 +38,7 @@ class CMakeProject():
 
     def load(self):
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
-        self.__name, self.version = self.parse_project_config(content)
-
-    def parse_project_config(self, input_string):
-        project_args = self.__parse_project_arguments(input_string)
-        name = project_args[0]
-        version = project_args[project_args.index("VERSION") + 1]
-
-        return (name, version)
+        self.__name, self.version = self.__parse_project_config(content)
 
     def store(self):
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
@@ -54,6 +47,13 @@ class CMakeProject():
         result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)), content)
 
         _store_file(self.__proj_dir, self.PROJECT_CONFIG, result)
+
+    def __parse_project_config(self, input_string):
+        project_args = self.__parse_project_arguments(input_string)
+        name = project_args[0]
+        version = project_args[project_args.index("VERSION") + 1]
+
+        return (name, version)
 
     def __parse_project_arguments(self, input_string):
         match = re.search(self.__PATTERN, input_string, re.DOTALL)
