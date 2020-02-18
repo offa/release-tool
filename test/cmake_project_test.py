@@ -100,6 +100,15 @@ class TestCMakeProject(unittest.TestCase):
         mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            cmake_content_extended.format('4.8.2'))
 
+    @patch('release_tool.cmake._store_file')
+    @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2'))
+    def test_store_without_version_change_doesnt_change(self, _mock_load_file, mock_store_file):
+        proj = _mock_load()
+        proj.store()
+        self.assertEqual("0.1.2", proj.version)
+        mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
+                                           CMAKE_CONTENT.format('0.1.2'))
+
     def test_current_version(self):
         proj = _mock_load()
 
