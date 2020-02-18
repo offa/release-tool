@@ -58,7 +58,6 @@ def init(path):
 
     if project_contains_file(path, CMakeProject.PROJECT_CONFIG):
         proj = CMakeProject(path)
-        proj.load()
         return repo, proj
     raise UnsupportedProjectException("'{}' does not contain a supported project type".format(path))
 

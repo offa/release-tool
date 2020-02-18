@@ -25,8 +25,7 @@ class CMakeProject():
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
-        self.version = None
-        self.__name = None
+        self.load()
 
     @property
     def path(self):
