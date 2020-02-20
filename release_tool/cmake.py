@@ -25,6 +25,7 @@ class CMakeProject():
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
+        self.__version = None
         self.__load()
 
     @property
@@ -35,16 +36,21 @@ class CMakeProject():
     def name(self):
         return self.__name
 
-    def store(self):
+    @property
+    def version(self):
+        return self.__version
+
+    def set_new_version(self, new_version):
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
         project_args = self.__parse_project_arguments(content)
-        project_args[project_args.index("VERSION") + 1] = self.version
+        self.__version = new_version
+        project_args[project_args.index("VERSION") + 1] = self.__version
         result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)), content)
         _store_file(self.__proj_dir, self.PROJECT_CONFIG, result)
 
     def __load(self):
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
-        self.__name, self.version = self.__parse_project_config(content)
+        self.__name, self.__version = self.__parse_project_config(content)
 
     def __parse_project_config(self, input_string):
         project_args = self.__parse_project_arguments(input_string)

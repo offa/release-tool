@@ -65,26 +65,24 @@ class TestCMakeProject(unittest.TestCase):
 
     @patch('release_tool.cmake._store_file')
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
-    def test_store_writes_data(self, _mock_load_file, mock_store_file):
+    def test_set_new_version_writes_data(self, _mock_load_file, mock_store_file):
         proj = _mock_load()
-        proj.version = '1.9.10'
-        proj.store()
+        proj.set_new_version("1.9.10")
 
         self.assertEqual(proj.version, '1.9.10')
         mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            CMAKE_CONTENT.format('1.9.10'))
 
     @patch('release_tool.cmake._store_file')
-    def test_store_keeps_existing_values(self, mock_store_file):
+    def test_set_new_version_keeps_existing_values(self, mock_store_file):
         proj = _mock_load()
-        proj.version = '4.8.2'
 
         cmake_content_extended = 'cmake_minimum_required(VERSION 3.14)\n' \
             'project(TestProj LANGUAGES CXX VERSION {} DESCRIPTION "Additional values here")'
 
         with patch('release_tool.cmake._load_file',
                    return_value=cmake_content_extended.format('0.1.2')):
-            proj.store()
+            proj.set_new_version("4.8.2")
 
         self.assertEqual(proj.version, '4.8.2')
         mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
@@ -92,9 +90,9 @@ class TestCMakeProject(unittest.TestCase):
 
     @patch('release_tool.cmake._store_file')
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2'))
-    def test_store_without_version_change_doesnt_change(self, _mock_load_file, mock_store_file):
+    def test_set_new_version_without_version_change_doesnt_change(self, _mock_load_file, mock_store_file):
         proj = _mock_load()
-        proj.store()
+        proj.set_new_version("0.1.2")
         self.assertEqual("0.1.2", proj.version)
         mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            CMAKE_CONTENT.format('0.1.2'))
@@ -103,13 +101,6 @@ class TestCMakeProject(unittest.TestCase):
         proj = _mock_load()
 
         self.assertEqual(proj.version, '0.1.2')
-
-    def test_set_new_version(self):
-        proj = _mock_load()
-
-        self.assertEqual(proj.version, '0.1.2')
-        proj.version = '1.3.4'
-        self.assertEqual(proj.version, '1.3.4')
 
 
 def _mock_load():

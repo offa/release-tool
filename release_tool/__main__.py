@@ -68,8 +68,7 @@ def check_precondition(repo, proj, new_version):
 
 
 def update_version_config(proj, new_version):
-    proj.version = new_version
-    proj.store()
+    proj.set_new_version(new_version)
 
 
 def update_scm(repo, proj, new_version):
