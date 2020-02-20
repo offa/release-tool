@@ -63,18 +63,18 @@ class TestCMakeProject(unittest.TestCase):
 
         mock_load_file.assert_called_with(proj.path, 'CMakeLists.txt')
 
-    @patch('release_tool.cmake._store_file')
+    @patch('release_tool.cmake._write_file')
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
-    def test_set_new_version_writes_data(self, _mock_load_file, mock_store_file):
+    def test_set_new_version_writes_data(self, _mock_load_file, mock_write_file):
         proj = _mock_load()
         proj.set_new_version("1.9.10")
 
         self.assertEqual(proj.version, '1.9.10')
-        mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
+        mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            CMAKE_CONTENT.format('1.9.10'))
 
-    @patch('release_tool.cmake._store_file')
-    def test_set_new_version_keeps_existing_values(self, mock_store_file):
+    @patch('release_tool.cmake._write_file')
+    def test_set_new_version_keeps_existing_values(self, mock_write_file):
         proj = _mock_load()
 
         cmake_content_extended = 'cmake_minimum_required(VERSION 3.14)\n' \
@@ -85,16 +85,16 @@ class TestCMakeProject(unittest.TestCase):
             proj.set_new_version("4.8.2")
 
         self.assertEqual(proj.version, '4.8.2')
-        mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
+        mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            cmake_content_extended.format('4.8.2'))
 
-    @patch('release_tool.cmake._store_file')
+    @patch('release_tool.cmake._write_file')
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2'))
-    def test_set_new_version_without_version_change_doesnt_change(self, _mock_load_file, mock_store_file):
+    def test_set_new_version_without_change_doesnt_change(self, _mock_load_file, mock_write_file):
         proj = _mock_load()
         proj.set_new_version("0.1.2")
         self.assertEqual("0.1.2", proj.version)
-        mock_store_file.assert_called_with(proj.path, 'CMakeLists.txt',
+        mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            CMAKE_CONTENT.format('0.1.2'))
 
     def test_current_version(self):

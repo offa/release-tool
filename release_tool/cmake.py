@@ -46,7 +46,7 @@ class CMakeProject():
         self.__version = new_version
         project_args[project_args.index("VERSION") + 1] = self.__version
         result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)), content)
-        _store_file(self.__proj_dir, self.PROJECT_CONFIG, result)
+        _write_file(self.__proj_dir, self.PROJECT_CONFIG, result)
 
     def __load(self):
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
@@ -70,6 +70,6 @@ def _load_file(path, filename):
     return None
 
 
-def _store_file(path, filename, content):
+def _write_file(path, filename, content):
     with open(os.path.join(path, filename), 'w') as file:
         file.write(content)
