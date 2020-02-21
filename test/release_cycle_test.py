@@ -18,7 +18,7 @@
 
 import unittest
 from unittest.mock import MagicMock
-from release_tool.release_cycle import PreconditionStep
+from release_tool.release_cycle import PreconditionStep, UpdateVersionStep
 
 class TestPreconditionStep(unittest.TestCase):
 
@@ -59,3 +59,15 @@ class TestPreconditionStep(unittest.TestCase):
         step = PreconditionStep()
         with self.assertRaises(Exception):
             step.execute(proj, repo, "0.1.2")
+
+
+
+class TestUpdateVersionStep(unittest.TestCase):
+
+    def test_sets_new_version(self):
+        proj = MagicMock()
+        repo = MagicMock()
+
+        step = UpdateVersionStep()
+        step.execute(proj, repo, "0.1.3")
+        proj.set_new_version.assert_called_once_with("0.1.3")

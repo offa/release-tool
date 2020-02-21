@@ -22,3 +22,9 @@ class PreconditionStep:
             raise Exception("The project contains uncommited changes")
         if proj.version == new_version:
             raise Exception("Version already up-to-date")
+
+
+class UpdateVersionStep:
+
+    def execute(self, proj, repo, new_version):
+        proj.set_new_version(new_version)
