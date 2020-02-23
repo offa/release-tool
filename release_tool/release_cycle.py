@@ -36,3 +36,15 @@ class CommitAndTagChangesStep:
         commit_message = "Release v{}.".format(new_version)
         repo.index.commit(commit_message)
         repo.create_tag("v{}".format(new_version), message=commit_message)
+
+
+class ReleaseCycle:
+
+    def __init__(self, proj, repo, steps):
+        self.__proj = proj
+        self.__repo = repo
+        self.__steps = steps
+
+    def create_release(self, new_version):
+        for step in self.__steps:
+            step.execute(self.__proj, self.__repo, new_version)

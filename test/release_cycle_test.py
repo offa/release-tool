@@ -17,8 +17,44 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-from unittest.mock import MagicMock
-from release_tool.release_cycle import PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep
+from unittest.mock import MagicMock, Mock, call
+from release_tool.release_cycle import ReleaseCycle, PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep
+
+class TestReleaseCycle(unittest.TestCase):
+
+    def test_step_executed(self):
+        proj = MagicMock()
+        proj.version = "0.1.0"
+        repo = MagicMock()
+        step = MagicMock()
+
+        cycle = ReleaseCycle(proj, repo, [step])
+        cycle.create_release("0.1.1")
+
+        self.assertEqual(1, step.execute.call_count)
+        step.execute.assert_called_once_with(proj, repo, "0.1.1")
+
+    def test_steps_executed_in_order(self):
+        proj = MagicMock()
+        proj.version = "6.7.7"
+        repo = MagicMock()
+        steps = [MagicMock(), MagicMock(), MagicMock()]
+
+        cycle = ReleaseCycle(proj, repo, steps)
+
+        expected_args = (proj, repo, "6.7.8")
+        manager = Mock()
+        (manager.step_0, manager.step_1, manager.step_2) = (steps[0], steps[1], steps[2])
+
+        cycle.create_release("6.7.8")
+
+        expected_calls = [call.step_0.execute(*expected_args),
+                          call.step_1.execute(*expected_args),
+                          call.step_2.execute(*expected_args),
+                          ]
+        self.assertEqual(expected_calls, manager.mock_calls)
+
+
 
 class TestPreconditionStep(unittest.TestCase):
 
