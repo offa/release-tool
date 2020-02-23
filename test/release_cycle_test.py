@@ -18,7 +18,7 @@
 
 import unittest
 from unittest.mock import MagicMock
-from release_tool.release_cycle import PreconditionStep, UpdateVersionStep
+from release_tool.release_cycle import PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep
 
 class TestPreconditionStep(unittest.TestCase):
 
@@ -71,3 +71,17 @@ class TestUpdateVersionStep(unittest.TestCase):
         step = UpdateVersionStep()
         step.execute(proj, repo, "0.1.3")
         proj.set_new_version.assert_called_once_with("0.1.3")
+
+
+
+class TestCommitAndTagChangesStep(unittest.TestCase):
+
+    def test_commits_changes_and_creates_tag(self):
+        proj = MagicMock()
+        repo = MagicMock()
+        proj.version = "1.2.3"
+
+        step = CommitAndTagChangesStep()
+        step.execute(proj, repo, "1.2.3")
+        repo.index.commit.assert_called_once_with("Release v1.2.3.")
+        repo.create_tag.assert_called_once_with("v1.2.3", message="Release v1.2.3.")

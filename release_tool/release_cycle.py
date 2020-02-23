@@ -28,3 +28,11 @@ class UpdateVersionStep:
 
     def execute(self, proj, repo, new_version):
         proj.set_new_version(new_version)
+
+
+class CommitAndTagChangesStep:
+
+    def execute(self, proj, repo, new_version):
+        commit_message = "Release v{}.".format(new_version)
+        repo.index.commit(commit_message)
+        repo.create_tag("v{}".format(new_version), message=commit_message)
