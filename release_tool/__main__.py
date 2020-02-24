@@ -20,13 +20,10 @@ import os
 import git
 from version import __version__
 from cmake import CMakeProject
+from release_cycle import ReleaseCycle, PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep
 
 
 class UnsupportedProjectException(Exception):
-    pass
-
-
-class ConditionFailedException(Exception):
     pass
 
 
@@ -44,11 +41,6 @@ def parse_args():
     return parser.parse_args()
 
 
-def ensure_condition(condition, message):
-    if not condition:
-        raise ConditionFailedException(message)
-
-
 def project_contains_file(path, filename):
     return os.path.isfile(os.path.join(path, filename))
 
@@ -62,33 +54,18 @@ def init(path):
     raise UnsupportedProjectException("'{}' does not contain a supported project type".format(path))
 
 
-def check_precondition(repo, proj, new_version):
-    ensure_condition(not repo.is_dirty(), 'The project contains uncommited changes')
-    ensure_condition(proj.version != new_version, "Version already up-to-date")
-
-
-def update_version_config(proj, new_version):
-    proj.set_new_version(new_version)
-
-
-def update_scm(repo, proj, new_version):
-    repo.index.add([proj.PROJECT_CONFIG])
-    ensure_condition(repo.is_dirty(), 'No changes to commit')
-
-    commit_message = "Release v{}".format(new_version)
-    repo.index.commit(commit_message)
-    repo.create_tag("v{}".format(new_version), message=commit_message)
-
-
 def main():
     args = parse_args()
 
     new_version = args.release_version.strip()
     repo, proj = init(args.path[0])
 
-    check_precondition(repo, proj, new_version)
-    update_version_config(proj, new_version)
-    update_scm(repo, proj, new_version)
+    cycle = ReleaseCycle(proj, repo, [
+        PreconditionStep(),
+        UpdateVersionStep(),
+        CommitAndTagChangesStep()
+    ])
+    cycle.create_release(new_version)
 
 
 if __name__ == '__main__':
