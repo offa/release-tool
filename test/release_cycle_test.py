@@ -18,7 +18,7 @@
 
 import unittest
 from unittest.mock import MagicMock, Mock, call
-from release_tool.release_cycle import ReleaseCycle, PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep
+from release_tool.release_cycle import ReleaseCycle, PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep, ConditionFailedException
 
 class TestReleaseCycle(unittest.TestCase):
 
@@ -93,7 +93,7 @@ class TestPreconditionStep(unittest.TestCase):
         proj.version = "0.1.2"
 
         step = PreconditionStep()
-        with self.assertRaises(Exception):
+        with self.assertRaises(ConditionFailedException):
             step.execute(proj, repo, "0.1.2")
 
 

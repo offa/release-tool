@@ -15,13 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+class ConditionFailedException(Exception):
+    pass
+
+
 class PreconditionStep:
 
     def execute(self, proj, repo, new_version):
         if repo.is_dirty():
-            raise Exception("The project contains uncommited changes")
+            raise ConditionFailedException("The project contains uncommited changes")
         if proj.version == new_version:
-            raise Exception("Version already up-to-date")
+            raise ConditionFailedException("Version already up-to-date")
 
 
 class UpdateVersionStep:
