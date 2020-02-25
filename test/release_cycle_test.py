@@ -18,7 +18,8 @@
 
 import unittest
 from unittest.mock import MagicMock, Mock, call
-from release_tool.release_cycle import ReleaseCycle, PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep, ConditionFailedException
+from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
+    UpdateVersionStep, CommitAndTagChangesStep, ConditionFailedException
 
 class TestReleaseCycle(unittest.TestCase):
 
@@ -58,6 +59,7 @@ class TestReleaseCycle(unittest.TestCase):
 
 class TestPreconditionStep(unittest.TestCase):
 
+    # pylint: disable=R0201
     def test_passes_if_repo_not_dirty(self):
         proj = MagicMock()
         proj.version = "0.1.2"
@@ -100,6 +102,7 @@ class TestPreconditionStep(unittest.TestCase):
 
 class TestUpdateVersionStep(unittest.TestCase):
 
+    # pylint: disable=R0201
     def test_sets_new_version(self):
         proj = MagicMock()
         repo = MagicMock()
@@ -112,6 +115,7 @@ class TestUpdateVersionStep(unittest.TestCase):
 
 class TestCommitAndTagChangesStep(unittest.TestCase):
 
+    # pylint: disable=R0201
     def test_commits_changes_and_creates_tag(self):
         proj = MagicMock()
         repo = MagicMock()
