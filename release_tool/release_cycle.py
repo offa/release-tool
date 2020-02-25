@@ -31,7 +31,7 @@ class PreconditionStep:
 
 class UpdateVersionStep:
 
-    def execute(self, proj, repo, new_version):
+    def execute(self, proj, _repo, new_version):
         proj.set_new_version(new_version)
 
 
