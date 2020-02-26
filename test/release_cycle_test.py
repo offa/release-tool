@@ -17,11 +17,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-from unittest.mock import MagicMock, Mock, call
+from unittest.mock import MagicMock, Mock, call, patch
+import git
+from release_tool.cmake import CMakeProject
 from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
-    UpdateVersionStep, CommitAndTagChangesStep, ConditionFailedException
+    UpdateVersionStep, CommitAndTagChangesStep, ConditionFailedException, \
+    UnsupportedProjectException
 
 class TestReleaseCycle(unittest.TestCase):
+
+    @patch('os.path.isfile', return_value=True)
+    def test_project_and_repository_from_path(self, _mock):
+        with patch.object(git.Git, "__init__", lambda x, y: None):
+            with patch.object(CMakeProject, "__init__", lambda x, y: None):
+                cycle = ReleaseCycle.from_path("/tmp/cmake_project", [MagicMock()])
+                self.assertIsInstance(cycle.project, CMakeProject)
+                self.assertIsInstance(cycle.repository, git.Git)
+                self.assertEqual(1, cycle.number_of_steps())
+
+    @patch('os.path.isfile', return_value=False)
+    def test_from_path_throws_if_no_project_file(self, _mock):
+        with self.assertRaises(UnsupportedProjectException):
+            ReleaseCycle.from_path("/tmp/cmake_project", [MagicMock()])
+        _mock.assert_called_once_with("/tmp/cmake_project")
 
     def test_step_executed(self):
         proj = MagicMock()

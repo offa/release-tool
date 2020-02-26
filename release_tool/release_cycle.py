@@ -15,8 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
+import git
+from cmake import CMakeProject
+
 
 class ConditionFailedException(Exception):
+    pass
+
+class UnsupportedProjectException(Exception):
     pass
 
 
@@ -53,6 +60,26 @@ class ReleaseCycle:
         self.__proj = proj
         self.__repo = repo
         self.__steps = steps
+
+    @classmethod
+    def from_path(cls, path, steps):
+        repo = git.Git(path)
+
+        if os.path.isfile(path):
+            proj = CMakeProject(path)
+            return cls(proj, repo, steps)
+        raise UnsupportedProjectException("'{}' no supported project found".format(path))
+
+    def number_of_steps(self):
+        return len(self.__steps)
+
+    @property
+    def repository(self):
+        return self.__repo
+
+    @property
+    def project(self):
+        return self.__proj
 
     def create_release(self, new_version):
         for step in self.__steps:
