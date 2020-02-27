@@ -12,5 +12,5 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - pytest
+  - python -m pytest
   - pylint release_tool test *.py
