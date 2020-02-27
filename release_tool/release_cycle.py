@@ -17,7 +17,7 @@
 
 import os
 import git
-from cmake import CMakeProject
+from release_tool.cmake import CMakeProject
 
 
 class ConditionFailedException(Exception):

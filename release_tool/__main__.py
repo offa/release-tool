@@ -16,8 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
-from version import __version__
-from release_cycle import ReleaseCycle, PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep
+from release_tool.version import __version__
+from release_tool.release_cycle import ReleaseCycle, PreconditionStep, UpdateVersionStep, CommitAndTagChangesStep
 
 
 class UnsupportedProjectException(Exception):
