@@ -21,14 +21,6 @@ from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
     UpdateVersionStep, CommitAndTagChangesStep
 
 
-class UnsupportedProjectException(Exception):
-    pass
-
-
-class ConditionFailedException(Exception):
-    pass
-
-
 def parse_args():
     parser = argparse.ArgumentParser(prog="release-tool",
                                      description='Performs releases')
