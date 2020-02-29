@@ -66,7 +66,7 @@ class ReleaseCycle:
     def from_path(cls, path, steps):
         repo = git.Git(path)
 
-        if os.path.isfile(path):
+        if os.path.isfile(os.path.join(path, CMakeProject.PROJECT_CONFIG)):
             proj = CMakeProject(path)
             return cls(proj, repo, steps)
         raise UnsupportedProjectException("'{}' no supported project found".format(path))
