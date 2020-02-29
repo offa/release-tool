@@ -24,6 +24,7 @@ from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
     UpdateVersionStep, CommitAndTagChangesStep, ConditionFailedException, \
     UnsupportedProjectException
 
+
 class TestReleaseCycle(unittest.TestCase):
 
     @patch('os.path.isfile', return_value=True)
@@ -69,10 +70,8 @@ class TestReleaseCycle(unittest.TestCase):
 
         expected_calls = [call.step_0.execute(*expected_args),
                           call.step_1.execute(*expected_args),
-                          call.step_2.execute(*expected_args),
-                          ]
+                          call.step_2.execute(*expected_args)]
         self.assertEqual(expected_calls, manager.mock_calls)
-
 
 
 class TestPreconditionStep(unittest.TestCase):
@@ -117,7 +116,6 @@ class TestPreconditionStep(unittest.TestCase):
             step.execute(proj, repo, "0.1.2")
 
 
-
 class TestUpdateVersionStep(unittest.TestCase):
 
     # pylint: disable=R0201
@@ -128,7 +126,6 @@ class TestUpdateVersionStep(unittest.TestCase):
         step = UpdateVersionStep()
         step.execute(proj, repo, "0.1.3")
         proj.set_new_version.assert_called_once_with("0.1.3")
-
 
 
 class TestCommitAndTagChangesStep(unittest.TestCase):

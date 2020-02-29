@@ -23,6 +23,7 @@ from release_tool.cmake import CMakeProject
 class ConditionFailedException(Exception):
     pass
 
+
 class UnsupportedProjectException(Exception):
     pass
 

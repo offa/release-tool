@@ -20,8 +20,10 @@ from release_tool.version import __version__
 from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
     UpdateVersionStep, CommitAndTagChangesStep
 
+
 class UnsupportedProjectException(Exception):
     pass
+
 
 class ConditionFailedException(Exception):
     pass
