@@ -83,5 +83,6 @@ class ReleaseCycle:
         return self.__proj
 
     def create_release(self, new_version):
+        version = new_version.strip()
         for step in self.__steps:
-            step.execute(self.__proj, self.__repo, new_version)
+            step.execute(self.__proj, self.__repo, version)

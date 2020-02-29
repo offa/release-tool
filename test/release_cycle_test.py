@@ -73,6 +73,18 @@ class TestReleaseCycle(unittest.TestCase):
                           call.step_2.execute(*expected_args)]
         self.assertEqual(expected_calls, manager.mock_calls)
 
+    def test_create_release_strips_whitespaces(self):
+        proj = MagicMock()
+        proj.version = "0.1.0"
+        repo = MagicMock()
+        step = MagicMock()
+
+        cycle = ReleaseCycle(proj, repo, [step])
+        cycle.create_release("\t\n 0.3.4  ")
+
+        self.assertEqual(1, step.execute.call_count)
+        step.execute.assert_called_once_with(proj, repo, "0.3.4")
+
 
 class TestPreconditionStep(unittest.TestCase):
 

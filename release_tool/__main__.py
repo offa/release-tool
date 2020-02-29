@@ -37,7 +37,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    new_version = args.release_version.strip()
+    new_version = args.release_version
     cycle = ReleaseCycle.from_path(args.path[0], [
         PreconditionStep(),
         UpdateVersionStep(),
