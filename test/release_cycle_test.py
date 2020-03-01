@@ -29,18 +29,19 @@ class TestReleaseCycle(unittest.TestCase):
 
     @patch('os.path.isfile', return_value=True)
     def test_project_and_repository_from_path(self, mock):
-        with patch.object(git.Git, "__init__", lambda x, y: None), \
-                patch.object(CMakeProject, "__init__", lambda x, y: None):
+        with patch.object(git.Repo, "__init__", lambda p0, p1: None), \
+                patch.object(CMakeProject, "__init__", lambda p0, p1: None):
             cycle = ReleaseCycle.from_path("/tmp/cmake_project", [MagicMock()])
             mock.assert_called_once_with("/tmp/cmake_project/CMakeLists.txt")
             self.assertIsInstance(cycle.project, CMakeProject)
-            self.assertIsInstance(cycle.repository, git.Git)
+            self.assertIsInstance(cycle.repository, git.Repo)
             self.assertEqual(1, cycle.number_of_steps())
 
     @patch('os.path.isfile', return_value=False)
     def test_from_path_throws_if_no_project_file(self, mock):
-        with self.assertRaises(UnsupportedProjectException):
-            ReleaseCycle.from_path("/tmp/cmake_project", [MagicMock()])
+        with patch.object(git.Repo, "__init__", lambda p0, p1: None):
+            with self.assertRaises(UnsupportedProjectException):
+                ReleaseCycle.from_path("/tmp/cmake_project", [MagicMock()])
         mock.assert_called_once_with("/tmp/cmake_project/CMakeLists.txt")
 
     def test_step_executed(self):

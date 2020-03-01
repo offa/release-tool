@@ -64,7 +64,7 @@ class ReleaseCycle:
 
     @classmethod
     def from_path(cls, path, steps):
-        repo = git.Git(path)
+        repo = git.Repo(path)
 
         if os.path.isfile(os.path.join(path, CMakeProject.PROJECT_CONFIG)):
             proj = CMakeProject(path)
