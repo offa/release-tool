@@ -18,7 +18,7 @@
 import argparse
 from release_tool.version import __version__
 from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
-    UpdateVersionStep, CommitAndTagChangesStep
+    UpdateVersionStep, CommitAndTagStep
 
 
 def parse_args():
@@ -41,7 +41,7 @@ def main():
     cycle = ReleaseCycle.from_path(args.path[0], [
         PreconditionStep(),
         UpdateVersionStep(),
-        CommitAndTagChangesStep()
+        CommitAndTagStep()
     ])
     cycle.create_release(new_version)
 

@@ -21,7 +21,7 @@ from unittest.mock import MagicMock, Mock, call, patch
 import git
 from release_tool.cmake import CMakeProject
 from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
-    UpdateVersionStep, CommitAndTagChangesStep, ConditionFailedException, \
+    UpdateVersionStep, CommitAndTagStep, ConditionFailedException, \
     UnsupportedProjectException
 
 
@@ -127,13 +127,13 @@ class TestUpdateVersionStep(unittest.TestCase):
         proj.set_new_version.assert_called_once_with("0.1.3")
 
 
-class TestCommitAndTagChangesStep(unittest.TestCase):
+class TestCommitAndTagStep(unittest.TestCase):
 
     # pylint: disable=R0201
     def test_commits_changes_and_creates_tag(self):
         proj, repo = _create_mocks("1.2.3")
 
-        step = CommitAndTagChangesStep()
+        step = CommitAndTagStep()
         step.execute(proj, repo, "1.2.3")
         repo.index.add.assert_called_once_with([proj.PROJECT_CONFIG])
         repo.index.commit.assert_called_once_with("Release v1.2.3.")

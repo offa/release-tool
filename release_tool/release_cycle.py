@@ -45,7 +45,7 @@ class UpdateVersionStep:
         proj.set_new_version(new_version)
 
 
-class CommitAndTagChangesStep:
+class CommitAndTagStep:
 
     # pylint: disable=R0201
     def execute(self, proj, repo, new_version):
