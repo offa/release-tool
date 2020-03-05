@@ -45,9 +45,7 @@ class TestReleaseCycle(unittest.TestCase):
         mock.assert_called_once_with("/tmp/cmake_project/CMakeLists.txt")
 
     def test_step_executed(self):
-        proj = MagicMock()
-        proj.version = "0.1.0"
-        repo = MagicMock()
+        proj, repo = _create_mocks("0.1.0")
         step = MagicMock()
 
         cycle = ReleaseCycle(proj, repo, [step])
@@ -57,9 +55,7 @@ class TestReleaseCycle(unittest.TestCase):
         step.execute.assert_called_once_with(proj, repo, "0.1.1")
 
     def test_steps_executed_in_order(self):
-        proj = MagicMock()
-        proj.version = "6.7.7"
-        repo = MagicMock()
+        proj, repo = _create_mocks("6.6.7")
         steps = [MagicMock(), MagicMock(), MagicMock()]
 
         cycle = ReleaseCycle(proj, repo, steps)
@@ -76,9 +72,7 @@ class TestReleaseCycle(unittest.TestCase):
         self.assertEqual(expected_calls, manager.mock_calls)
 
     def test_create_release_strips_whitespaces(self):
-        proj = MagicMock()
-        proj.version = "0.1.0"
-        repo = MagicMock()
+        proj, repo = _create_mocks("0.1.0")
         step = MagicMock()
 
         cycle = ReleaseCycle(proj, repo, [step])
@@ -92,18 +86,14 @@ class TestPreconditionStep(unittest.TestCase):
 
     # pylint: disable=R0201
     def test_passes_if_repo_not_dirty(self):
-        proj = MagicMock()
-        proj.version = "0.1.2"
-        repo = MagicMock()
+        proj, repo = _create_mocks("0.1.2")
         repo.is_dirty = MagicMock(return_value=False)
 
         step = PreconditionStep()
         step.execute(proj, repo, "0.1.3")
 
     def test_fails_if_repo_dirty(self):
-        proj = MagicMock()
-        proj.version = "0.1.2"
-        repo = MagicMock()
+        proj, repo = _create_mocks("0.1.2")
         repo.is_dirty = MagicMock(return_value=True)
 
         step = PreconditionStep()
@@ -111,19 +101,15 @@ class TestPreconditionStep(unittest.TestCase):
             step.execute(proj, repo, "0.1.3")
 
     def test_passes_if_different_version(self):
-        proj = MagicMock()
-        repo = MagicMock()
+        proj, repo = _create_mocks("0.1.2")
         repo.is_dirty = MagicMock(return_value=False)
-        proj.version = "0.1.2"
 
         step = PreconditionStep()
         step.execute(proj, repo, "0.1.3")
 
     def test_fails_if_same_version(self):
-        proj = MagicMock()
-        repo = MagicMock()
+        proj, repo = _create_mocks("0.1.2")
         repo.is_dirty = MagicMock(return_value=False)
-        proj.version = "0.1.2"
 
         step = PreconditionStep()
         with self.assertRaises(ConditionFailedException):
@@ -134,8 +120,7 @@ class TestUpdateVersionStep(unittest.TestCase):
 
     # pylint: disable=R0201
     def test_sets_new_version(self):
-        proj = MagicMock()
-        repo = MagicMock()
+        proj, repo = _create_mocks("0.0.1")
 
         step = UpdateVersionStep()
         step.execute(proj, repo, "0.1.3")
@@ -146,12 +131,17 @@ class TestCommitAndTagChangesStep(unittest.TestCase):
 
     # pylint: disable=R0201
     def test_commits_changes_and_creates_tag(self):
-        proj = MagicMock()
-        repo = MagicMock()
-        proj.version = "1.2.3"
+        proj, repo = _create_mocks("1.2.3")
 
         step = CommitAndTagChangesStep()
         step.execute(proj, repo, "1.2.3")
         repo.index.add.assert_called_once_with([proj.PROJECT_CONFIG])
         repo.index.commit.assert_called_once_with("Release v1.2.3.")
         repo.create_tag.assert_called_once_with("v1.2.3", message="Release v1.2.3.")
+
+
+def _create_mocks(version):
+    proj = MagicMock()
+    repo = MagicMock()
+    proj.version = version
+    return (proj, repo)
