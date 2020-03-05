@@ -1,10 +1,10 @@
 # Runtime
-GitPython==3.1.0
+GitPython
 
 # Test
-pytest==5.3.5
-pylint==2.4.4
+pytest
+pylint
 
 
 # Formatting
-autopep8==1.5
+autopep8
