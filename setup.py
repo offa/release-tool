@@ -15,6 +15,7 @@ setuptools.setup(
     long_description=long_description_readme(),
     url='https://github.com/offa/release-tool',
     packages=['release_tool'],
+    entry_points={"console_scripts": ["releasetool = release_tool.__main__:main"]},
     keywords=['project', 'release', 'cmake', 'git'],
     classifiers=[
         'Development Status :: 3 - Alpha',
