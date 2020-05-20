@@ -13,6 +13,7 @@ setuptools.setup(
     author_email='offa@github',
     description='Tool to create project releases.',
     long_description=long_description_readme(),
+    long_description_content_type="text/markdown",
     url='https://github.com/offa/release-tool',
     packages=['release_tool'],
     entry_points={"console_scripts": ["releasetool = release_tool.__main__:main"]},
