@@ -19,7 +19,7 @@ setuptools.setup(
     entry_points={"console_scripts": ["releasetool = release_tool.__main__:main"]},
     keywords=['project', 'release', 'cmake', 'git'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Topic :: Software Development',

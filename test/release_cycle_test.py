@@ -1,4 +1,3 @@
-
 # release-tool - Tool to create project releases
 #
 # Copyright (C) 2019-2020  offa
