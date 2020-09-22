@@ -28,7 +28,7 @@ class CMakeProject():
         project_args = self.__parse_project_arguments(
             _load_file(self.__proj_dir, self.PROJECT_CONFIG))
         self.__name = project_args[0].strip()
-        self.__version = project_args[self.__index_of(project_args, "VERSION") + 1].strip()
+        self.__version = project_args[_index_of(project_args, "VERSION") + 1].strip()
 
     @property
     def path(self):
@@ -47,7 +47,7 @@ class CMakeProject():
         project_args = self.__parse_project_arguments(content, True)
         self.__version = new_version
 
-        idx = self.__index_of(project_args, "VERSION") + 1
+        idx = _index_of(project_args, "VERSION") + 1
         suffix = "\n" if project_args[idx].endswith(("\n", "\r")) else ""
         project_args[idx] = self.__version + suffix
 
@@ -60,12 +60,12 @@ class CMakeProject():
         args = match.group(1).split(" ")
         return args if keep_whitespaces else [token for token in args if token.strip()]
 
-    def __index_of(self, args, name):
-        for element in args:
-            if element.strip() == name:
-                return args.index(element)
-        raise ValueError("No element '{}' found in '{}'".format(name, args))
 
+def _index_of(args, name):
+    for element in args:
+        if element.strip() == name:
+            return args.index(element)
+    raise ValueError("No element '{}' found in '{}'".format(name, args))
 
 def _load_file(path, filename):
     with open(os.path.join(path, filename)) as file:
