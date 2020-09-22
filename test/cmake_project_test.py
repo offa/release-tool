@@ -47,7 +47,6 @@ project(project-name-1
         self.assertEqual(proj.name, 'project-name-1')
         self.assertEqual(proj.version, '1.16.7')
 
-
     def test_parse_project_config_handles_whitespaces(self):
         content_ws = 'cmake_minimum_required(VERSION 3.14)\n\n' \
             '  \n \t project  (\n\n\t TestProj \n  \nVERSION \n {} \n)\n\n'
@@ -88,6 +87,27 @@ project(project-name-1
         self.assertEqual(proj.version, '1.9.10')
         mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
                                            CMAKE_CONTENT.format('1.9.10'))
+
+    @patch('release_tool.cmake._write_file')
+    def test_set_new_version_keeps_existing_values________2(self, mock_write_file):
+        proj = _mock_load()
+
+        cmake_content_extended = """
+cmake_minimum_required(VERSION 3.15)
+
+project(project-name-1
+  VERSION {}
+  DESCRIPTION "An example project"
+  LANGUAGES CXX
+)
+"""
+        with patch('release_tool.cmake._load_file',
+                   return_value=cmake_content_extended.format('0.1.2')):
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, '4.8.2')
+        mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
+                                           cmake_content_extended.format('4.8.2'))
 
     @patch('release_tool.cmake._write_file')
     def test_set_new_version_keeps_existing_values(self, mock_write_file):

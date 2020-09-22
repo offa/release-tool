@@ -27,8 +27,8 @@ class CMakeProject():
         self.__proj_dir = proj_dir
         project_args = self.__parse_project_arguments(
             _load_file(self.__proj_dir, self.PROJECT_CONFIG))
-        self.__name = project_args[0]
-        self.__version = project_args[project_args.index("VERSION") + 1]
+        self.__name = project_args[0].strip()
+        self.__version = project_args[self.__index_of(project_args, "VERSION") + 1].strip()
 
     @property
     def path(self):
@@ -44,15 +44,27 @@ class CMakeProject():
 
     def set_new_version(self, new_version):
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
-        project_args = self.__parse_project_arguments(content)
+        project_args = self.__parse_project_arguments(content, True)
         self.__version = new_version
-        project_args[project_args.index("VERSION") + 1] = self.__version
-        result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)), content)
+
+        idx = self.__index_of(project_args, "VERSION") + 1
+        suffix = "\n" if project_args[idx].endswith(("\n", "\r")) else ""
+        project_args[idx] = self.__version + suffix
+
+        result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)),
+                        content, flags=re.DOTALL)
         _write_file(self.__proj_dir, self.PROJECT_CONFIG, result)
 
-    def __parse_project_arguments(self, input_string):
+    def __parse_project_arguments(self, input_string, keep_whitespaces=False):
         match = re.search(self.__PATTERN, input_string, re.DOTALL)
-        return match.group(1).split()
+        args = match.group(1).split(" ")
+        return args if keep_whitespaces else [token for token in args if token.strip()]
+
+    def __index_of(self, args, name):
+        for element in args:
+            if element.strip() == name:
+                return args.index(element)
+        raise ValueError("No element '{}' found in '{}'".format(name, args))
 
 
 def _load_file(path, filename):
