@@ -32,6 +32,22 @@ class TestCMakeProject(unittest.TestCase):
         self.assertEqual(proj.name, 'TestProj')
         self.assertEqual(proj.version, '1.23.456')
 
+    @patch('release_tool.cmake._load_file', return_value="""
+cmake_minimum_required(VERSION 3.15)
+
+project(project-name-1
+  VERSION 1.16.7
+  DESCRIPTION "An example project"
+  LANGUAGES CXX
+)
+""")
+    def test_parse_project_config_parses_values_multiline(self, _mock_load_file):
+        proj = CMakeProject('abc')
+
+        self.assertEqual(proj.name, 'project-name-1')
+        self.assertEqual(proj.version, '1.16.7')
+
+
     def test_parse_project_config_handles_whitespaces(self):
         content_ws = 'cmake_minimum_required(VERSION 3.14)\n\n' \
             '  \n \t project  (\n\n\t TestProj \n  \nVERSION \n {} \n)\n\n'
