@@ -70,7 +70,6 @@ def _index_of(args, name):
 def _load_file(path, filename):
     with open(os.path.join(path, filename)) as file:
         return file.read()
-    return None
 
 
 def _write_file(path, filename, content):
