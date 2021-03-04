@@ -24,7 +24,6 @@ CMAKE_CONTENT = 'cmake_minimum_required(VERSION 3.14)\n\n' \
 
 
 class TestCMakeProject(unittest.TestCase):
-
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('1.23.456'))
     def test_parse_project_config_parses_values(self, _mock_load_file):
         proj = CMakeProject('abc')
@@ -32,7 +31,8 @@ class TestCMakeProject(unittest.TestCase):
         self.assertEqual(proj.name, 'TestProj')
         self.assertEqual(proj.version, '1.23.456')
 
-    @patch('release_tool.cmake._load_file', return_value="""
+    @patch('release_tool.cmake._load_file',
+           return_value="""
 cmake_minimum_required(VERSION 3.15)
 
 project(project-name-1
@@ -51,8 +51,7 @@ project(project-name-1
         content_ws = 'cmake_minimum_required(VERSION 3.14)\n\n' \
             '  \n \t project  (\n\n\t TestProj \n  \nVERSION \n {} \n)\n\n'
 
-        with patch('release_tool.cmake._load_file',
-                   return_value=content_ws.format('395.18.20')):
+        with patch('release_tool.cmake._load_file', return_value=content_ws.format('395.18.20')):
             proj = CMakeProject('abc')
 
         self.assertEqual(proj.name, 'TestProj')
@@ -62,8 +61,7 @@ project(project-name-1
         content_ws = 'cmake_minimum_required(VERSION 3.14)\n\n' \
             'project(TestProj DESCRIPTION "text" VERSION {} LANGUAGES CXX C)'
 
-        with patch('release_tool.cmake._load_file',
-                   return_value=content_ws.format('1.18.203')):
+        with patch('release_tool.cmake._load_file', return_value=content_ws.format('1.18.203')):
             proj = CMakeProject('abc')
 
         self.assertEqual(proj.name, 'TestProj')

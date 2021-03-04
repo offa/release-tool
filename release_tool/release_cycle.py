@@ -56,7 +56,6 @@ class CommitAndTagStep:
 
 
 class ReleaseCycle:
-
     def __init__(self, proj, repo, steps):
         self.__proj = proj
         self.__repo = repo

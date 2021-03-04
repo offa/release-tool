@@ -22,12 +22,16 @@ from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(prog="release-tool",
-                                     description='Performs releases')
+    parser = argparse.ArgumentParser(prog="release-tool", description='Performs releases')
     required = parser.add_argument_group('arguments')
-    required.add_argument('--release-version', '-r', type=str, required=True,
+    required.add_argument('--release-version',
+                          '-r',
+                          type=str,
+                          required=True,
                           help='Version to release')
-    parser.add_argument('--version', '-v', action='version',
+    parser.add_argument('--version',
+                        '-v',
+                        action='version',
                         version="%(prog)s {}".format(__version__),
                         help='Shows the program version')
     parser.add_argument("path", nargs=1)
@@ -38,11 +42,10 @@ def parse_args():
 def main():
     args = parse_args()
     new_version = args.release_version
-    cycle = ReleaseCycle.from_path(args.path[0], [
-        PreconditionStep(),
-        UpdateVersionStep(),
-        CommitAndTagStep()
-    ])
+    cycle = ReleaseCycle.from_path(
+        args.path[0],
+        [PreconditionStep(), UpdateVersionStep(),
+         CommitAndTagStep()])
     cycle.create_release(new_version)
 
 

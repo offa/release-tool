@@ -25,7 +25,6 @@ from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
 
 
 class TestReleaseCycle(unittest.TestCase):
-
     @patch('os.path.isfile', return_value=True)
     def test_project_and_repository_from_path(self, mock):
         with patch.object(git.Repo, "__init__", lambda p0, p1: None), \
@@ -65,9 +64,11 @@ class TestReleaseCycle(unittest.TestCase):
 
         cycle.create_release("6.7.8")
 
-        expected_calls = [call.step_0.execute(*expected_args),
-                          call.step_1.execute(*expected_args),
-                          call.step_2.execute(*expected_args)]
+        expected_calls = [
+            call.step_0.execute(*expected_args),
+            call.step_1.execute(*expected_args),
+            call.step_2.execute(*expected_args)
+        ]
         self.assertEqual(expected_calls, manager.mock_calls)
 
     def test_create_release_strips_whitespaces(self):

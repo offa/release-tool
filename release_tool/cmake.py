@@ -51,8 +51,10 @@ class CMakeProject():
         suffix = "\n" if project_args[idx].endswith(("\n", "\r")) else ""
         project_args[idx] = self.__version + suffix
 
-        result = re.sub(self.__PATTERN, "project({})".format(" ".join(project_args)),
-                        content, flags=re.DOTALL)
+        result = re.sub(self.__PATTERN,
+                        "project({})".format(" ".join(project_args)),
+                        content,
+                        flags=re.DOTALL)
         _write_file(self.__proj_dir, self.PROJECT_CONFIG, result)
 
     def __parse_project_arguments(self, input_string, keep_whitespaces=False):
@@ -66,6 +68,7 @@ def _index_of(args, name):
         if element.strip() == name:
             return args.index(element)
     raise ValueError("No element '{}' found in '{}'".format(name, args))
+
 
 def _load_file(path, filename):
     with open(os.path.join(path, filename)) as file:
