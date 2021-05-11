@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
+import os
 from release_tool.version import __version__
 from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
     UpdateVersionStep, CommitAndTagStep
@@ -34,7 +35,7 @@ def parse_args():
                         action='version',
                         version="%(prog)s {}".format(__version__),
                         help='Shows the program version')
-    parser.add_argument("path", nargs=1)
+    parser.add_argument("path", nargs='?', default=os.getcwd())
 
     return parser.parse_args()
 
@@ -43,9 +44,8 @@ def main():
     args = parse_args()
     new_version = args.release_version
     cycle = ReleaseCycle.from_path(
-        args.path[0],
-        [PreconditionStep(), UpdateVersionStep(),
-         CommitAndTagStep()])
+        args.path, [PreconditionStep(), UpdateVersionStep(),
+                    CommitAndTagStep()])
     cycle.create_release(new_version)
 
 
