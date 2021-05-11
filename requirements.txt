@@ -7,4 +7,4 @@ pylint
 
 
 # Formatting
-autopep8
+yapf
