@@ -17,7 +17,9 @@
 
 import argparse
 import os
+import sys
 from release_tool.version import __version__
+from release_tool.release_exception import ReleaseException
 from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
     UpdateVersionStep, CommitAndTagStep
 
@@ -43,10 +45,16 @@ def parse_args():
 def main():
     args = parse_args()
     new_version = args.release_version
-    cycle = ReleaseCycle.from_path(
-        args.path, [PreconditionStep(), UpdateVersionStep(),
-                    CommitAndTagStep()])
-    cycle.create_release(new_version)
+
+    try:
+        cycle = ReleaseCycle.from_path(
+            args.path,
+            [PreconditionStep(), UpdateVersionStep(),
+             CommitAndTagStep()])
+        cycle.create_release(new_version)
+    except ReleaseException as ex:
+        print("ERROR: {}".format(ex))
+        sys.exit(1)
 
 
 if __name__ == '__main__':

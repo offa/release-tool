@@ -18,13 +18,14 @@
 import os
 import git
 from release_tool.cmake import CMakeProject
+from release_tool.release_exception import ReleaseException
 
 
-class ConditionFailedException(Exception):
+class UnsupportedProjectException(ReleaseException):
     pass
 
 
-class UnsupportedProjectException(Exception):
+class ConditionFailedException(ReleaseException):
     pass
 
 
