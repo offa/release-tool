@@ -47,10 +47,12 @@ class UpdateVersionStep:
 
 
 class CommitAndTagStep:
+    def __init__(self, message=None):
+        self.__message = message if message else "Release v$v."
 
     # pylint: disable=R0201
     def execute(self, proj, repo, new_version):
-        commit_message = "Release v{}.".format(new_version)
+        commit_message = self.__message.replace("$v", new_version)
         repo.index.add([proj.PROJECT_CONFIG])
         repo.index.commit(commit_message)
         repo.create_tag("v{}".format(new_version), message=commit_message)

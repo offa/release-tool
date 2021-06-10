@@ -38,6 +38,10 @@ def parse_args():
                         version="%(prog)s {}".format(__version__),
                         help='Shows the program version')
     parser.add_argument("path", nargs='?', default=os.getcwd())
+    parser.add_argument("--message",
+                        "-m",
+                        type=str,
+                        help="Commit and Tag message (use '$v' for version)")
 
     return parser.parse_args()
 
@@ -48,9 +52,9 @@ def main():
 
     try:
         cycle = ReleaseCycle.from_path(
-            args.path,
-            [PreconditionStep(), UpdateVersionStep(),
-             CommitAndTagStep()])
+            args.path, [PreconditionStep(),
+                        UpdateVersionStep(),
+                        CommitAndTagStep(args.message)])
         cycle.create_release(new_version)
     except ReleaseException as ex:
         print("ERROR: {}".format(ex))
