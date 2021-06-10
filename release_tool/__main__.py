@@ -37,9 +37,9 @@ def parse_args():
                         action='version',
                         version="%(prog)s {}".format(__version__),
                         help='Shows the program version')
-    parser.add_argument("path", nargs='?', default=os.getcwd())
-    parser.add_argument("--message",
-                        "-m",
+    parser.add_argument('path', nargs='?', default=os.getcwd())
+    parser.add_argument('--message',
+                        '-m',
                         type=str,
                         help="Commit and Tag message (use '$v' for version)")
 
