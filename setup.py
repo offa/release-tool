@@ -1,8 +1,9 @@
 import setuptools
 from release_tool.version import __version__
 
+
 def long_description_readme():
-    with open("README.md", "r") as readme_file:
+    with open("README.md", "r", encoding="utf-8") as readme_file:
         return readme_file.read()
 
 

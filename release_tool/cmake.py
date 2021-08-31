@@ -71,10 +71,10 @@ def _index_of(args, name):
 
 
 def _load_file(path, filename):
-    with open(os.path.join(path, filename)) as file:
+    with open(os.path.join(path, filename), encoding="utf-8") as file:
         return file.read()
 
 
 def _write_file(path, filename, content):
-    with open(os.path.join(path, filename), 'w') as file:
+    with open(os.path.join(path, filename), 'w', encoding="utf-8") as file:
         file.write(content)
