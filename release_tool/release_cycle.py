@@ -55,7 +55,7 @@ class CommitAndTagStep:
         commit_message = self.__message.replace("$v", new_version)
         repo.index.add([proj.PROJECT_CONFIG])
         repo.index.commit(commit_message)
-        repo.create_tag("v{}".format(new_version), message=commit_message)
+        repo.create_tag(f"v{new_version}", message=commit_message)
 
 
 class ReleaseCycle:
@@ -71,7 +71,7 @@ class ReleaseCycle:
         if os.path.isfile(os.path.join(path, CMakeProject.PROJECT_CONFIG)):
             proj = CMakeProject(path)
             return cls(proj, repo, steps)
-        raise UnsupportedProjectException("'{}' no supported project found".format(path))
+        raise UnsupportedProjectException(f"'{path}' no supported project found")
 
     def number_of_steps(self):
         return len(self.__steps)

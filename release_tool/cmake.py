@@ -52,7 +52,7 @@ class CMakeProject():
         project_args[idx] = self.__version + suffix
 
         result = re.sub(self.__PATTERN,
-                        "project({})".format(" ".join(project_args)),
+                        f"project({' '.join(project_args)})",
                         content,
                         flags=re.DOTALL)
         _write_file(self.__proj_dir, self.PROJECT_CONFIG, result)
@@ -67,7 +67,7 @@ def _index_of(args, name):
     for element in args:
         if element.strip() == name:
             return args.index(element)
-    raise ValueError("No element '{}' found in '{}'".format(name, args))
+    raise ValueError(f"No element '{name}' found in '{args}'")
 
 
 def _load_file(path, filename):
