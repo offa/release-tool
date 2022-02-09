@@ -26,5 +26,5 @@ setuptools.setup(
         'Topic :: Software Development',
         'Topic :: Utilities',
     ],
-    install_requires=['GitPython']
+    install_requires=['GitPython == 3.1.26']
 )

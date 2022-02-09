@@ -1,10 +1,9 @@
 # Runtime
-GitPython
+GitPython == 3.1.26
 
 # Test
-pytest
-pylint
-
+pytest == 7.0.0
+pylint == 2.12.2
 
 # Formatting
-yapf
+yapf == 0.32.0
