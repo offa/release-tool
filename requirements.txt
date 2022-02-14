@@ -2,7 +2,7 @@
 GitPython == 3.1.26
 
 # Test
-pytest == 7.0.0
+pytest == 7.0.1
 pylint == 2.12.2
 
 # Formatting
