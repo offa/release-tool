@@ -1,5 +1,5 @@
 # Runtime
-GitPython == 3.1.26
+GitPython == 3.1.27
 
 # Test
 pytest == 7.0.1
