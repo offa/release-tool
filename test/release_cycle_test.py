@@ -25,6 +25,7 @@ from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
 
 
 class TestReleaseCycle(unittest.TestCase):
+
     @patch('os.path.isfile', return_value=True)
     def test_project_and_repository_from_path(self, mock):
         with patch.object(git.Repo, "__init__", lambda p0, p1: None), \

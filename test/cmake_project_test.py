@@ -24,6 +24,7 @@ CMAKE_CONTENT = 'cmake_minimum_required(VERSION 3.14)\n\n' \
 
 
 class TestCMakeProject(unittest.TestCase):
+
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('1.23.456'))
     def test_parse_project_config_parses_values(self, _mock_load_file):
         proj = CMakeProject('abc')

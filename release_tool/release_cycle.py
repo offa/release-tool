@@ -47,6 +47,7 @@ class UpdateVersionStep:
 
 
 class CommitAndTagStep:
+
     def __init__(self, message=None):
         self.__message = message if message else "Release v$v."
 
@@ -59,6 +60,7 @@ class CommitAndTagStep:
 
 
 class ReleaseCycle:
+
     def __init__(self, proj, repo, steps):
         self.__proj = proj
         self.__repo = repo
