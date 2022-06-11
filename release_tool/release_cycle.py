@@ -31,7 +31,6 @@ class ConditionFailedException(ReleaseException):
 
 class PreconditionStep:
 
-    # pylint: disable=R0201
     def execute(self, proj, repo, new_version):
         if repo.is_dirty():
             raise ConditionFailedException("The project contains uncommited changes")
@@ -41,7 +40,6 @@ class PreconditionStep:
 
 class UpdateVersionStep:
 
-    # pylint: disable=R0201
     def execute(self, proj, _repo, new_version):
         proj.set_new_version(new_version)
 
@@ -51,7 +49,6 @@ class CommitAndTagStep:
     def __init__(self, message=None):
         self.__message = message if message else "Release v$v."
 
-    # pylint: disable=R0201
     def execute(self, proj, repo, new_version):
         commit_message = self.__message.replace("$v", new_version)
         repo.index.add([proj.PROJECT_CONFIG])

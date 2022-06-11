@@ -85,7 +85,6 @@ class TestReleaseCycle(unittest.TestCase):
 
 class TestPreconditionStep(unittest.TestCase):
 
-    # pylint: disable=R0201
     def test_passes_if_repo_not_dirty(self):
         proj, repo = _create_mocks("0.1.2")
         repo.is_dirty = MagicMock(return_value=False)
@@ -119,7 +118,6 @@ class TestPreconditionStep(unittest.TestCase):
 
 class TestUpdateVersionStep(unittest.TestCase):
 
-    # pylint: disable=R0201
     def test_sets_new_version(self):
         proj, repo = _create_mocks("0.0.1")
 
@@ -130,7 +128,6 @@ class TestUpdateVersionStep(unittest.TestCase):
 
 class TestCommitAndTagStep(unittest.TestCase):
 
-    # pylint: disable=R0201
     def test_commits_changes_and_creates_tag(self):
         proj, repo = _create_mocks("1.2.3")
 
@@ -140,7 +137,6 @@ class TestCommitAndTagStep(unittest.TestCase):
         repo.index.commit.assert_called_once_with("Release v1.2.3.")
         repo.create_tag.assert_called_once_with("v1.2.3", message="Release v1.2.3.")
 
-    # pylint: disable=R0201
     def test_commits_changes_and_creates_tag_with_message(self):
         proj, repo = _create_mocks("1.2.3")
 
