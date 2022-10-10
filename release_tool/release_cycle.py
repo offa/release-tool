@@ -47,7 +47,7 @@ class UpdateVersionStep:
 class CommitAndTagStep:
 
     def __init__(self, message=None):
-        self.__message = message if message else "Release v$v."
+        self.__message = message if message else "Release v$v"
 
     def execute(self, proj, repo, new_version):
         commit_message = self.__message.replace("$v", new_version)

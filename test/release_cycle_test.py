@@ -134,8 +134,8 @@ class TestCommitAndTagStep(unittest.TestCase):
         step = CommitAndTagStep()
         step.execute(proj, repo, "1.2.3")
         repo.index.add.assert_called_once_with([proj.PROJECT_CONFIG])
-        repo.index.commit.assert_called_once_with("Release v1.2.3.")
-        repo.create_tag.assert_called_once_with("v1.2.3", message="Release v1.2.3.")
+        repo.index.commit.assert_called_once_with("Release v1.2.3")
+        repo.create_tag.assert_called_once_with("v1.2.3", message="Release v1.2.3")
 
     def test_commits_changes_and_creates_tag_with_message(self):
         proj, repo = _create_mocks("1.2.3")
