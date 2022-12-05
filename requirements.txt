@@ -3,7 +3,7 @@ GitPython == 3.1.29
 
 # Test
 pytest == 7.2.0
-pylint == 2.15.6
+pylint == 2.15.7
 
 # Formatting
 yapf == 0.32.0
