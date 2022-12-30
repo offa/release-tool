@@ -25,4 +25,4 @@ setuptools.setup(name='release-tool',
                      'Topic :: Software Development',
                      'Topic :: Utilities',
                  ],
-                 install_requires=['GitPython == 3.1.29'])
+                 install_requires=['GitPython == 3.1.30'])
