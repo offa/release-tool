@@ -1,0 +1,48 @@
+[project]
+name = "release-tool"
+dynamic = ["version"]
+authors = [{name = "offa"}]
+description = "Tool to create project releases."
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">= 3.7"
+dependencies = [
+    "GitPython == 3.1.31"
+]
+keywords = ["project", "release", "cmake", "git"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/offa/release-tool"
+
+[project.scripts]
+releasetool = "release_tool.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+    "pylint == 2.17.4",
+    "pytest == 7.3.1",
+    "yapf == 0.33.0"
+]
+
+[build-system]
+requires = ["setuptools"]
+
+[tool.setuptools.dynamic]
+version = {attr = "release_tool.version.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["release_tool"]
+
+[tool.yapf]
+based_on_style = "pep8"
+spaces_before_comment = 4
+split_before_logical_operator = true
+column_limit = 100
+
