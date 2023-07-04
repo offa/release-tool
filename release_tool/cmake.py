@@ -71,7 +71,7 @@ def _index_of(args, name):
 
 
 def _load_file(path, filename):
-    with open(os.path.join(path, filename), encoding="utf-8") as file:
+    with open(os.path.join(path, filename), 'r', encoding="utf-8") as file:
         return file.read()
 
 
