@@ -140,5 +140,4 @@ project(project-name-1
 
 def _mock_load():
     with patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.1.2')):
-        proj = CMakeProject('x')
-        return proj
+        return CMakeProject('x')
