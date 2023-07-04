@@ -88,7 +88,7 @@ project(project-name-1
                                            CMAKE_CONTENT.format('1.9.10'))
 
     @patch('release_tool.cmake._write_file')
-    def test_set_new_version_keeps_existing_values________2(self, mock_write_file):
+    def test_set_new_version_keeps_formatting(self, mock_write_file):
         proj = _mock_load()
 
         cmake_content_extended = """
