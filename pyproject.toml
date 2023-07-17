@@ -7,7 +7,7 @@ license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">= 3.8"
 dependencies = [
-    "GitPython == 3.1.31"
+    "GitPython == 3.1.32"
 ]
 keywords = ["project", "release", "cmake", "git"]
 classifiers = [
