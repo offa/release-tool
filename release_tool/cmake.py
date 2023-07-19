@@ -31,10 +31,6 @@ class CMakeProject():
         self.__version = project_args[_index_of(project_args, "VERSION") + 1].strip()
 
     @property
-    def path(self):
-        return self.__proj_dir
-
-    @property
     def name(self):
         return self.__name
 

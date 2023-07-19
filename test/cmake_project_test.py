@@ -75,7 +75,7 @@ project(project-name-1
         self.assertEqual(proj.version, '1.41.5')
         self.assertEqual(proj.name, 'TestProj')
 
-        mock_load_file.assert_called_with(proj.path, 'CMakeLists.txt')
+        mock_load_file.assert_called_with('x/proj-a', 'CMakeLists.txt')
 
     @patch('release_tool.cmake._write_file')
     @patch('release_tool.cmake._load_file', return_value=CMAKE_CONTENT.format('0.0.1'))
@@ -84,8 +84,7 @@ project(project-name-1
         proj.set_new_version("1.9.10")
 
         self.assertEqual(proj.version, '1.9.10')
-        mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
-                                           CMAKE_CONTENT.format('1.9.10'))
+        mock_write_file.assert_called_with('x', 'CMakeLists.txt', CMAKE_CONTENT.format('1.9.10'))
 
     @patch('release_tool.cmake._write_file')
     def test_set_new_version_keeps_formatting(self, mock_write_file):
@@ -105,7 +104,7 @@ project(project-name-1
             proj.set_new_version("4.8.2")
 
         self.assertEqual(proj.version, '4.8.2')
-        mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
+        mock_write_file.assert_called_with('x', 'CMakeLists.txt',
                                            cmake_content_extended.format('4.8.2'))
 
     @patch('release_tool.cmake._write_file')
@@ -120,7 +119,7 @@ project(project-name-1
             proj.set_new_version("4.8.2")
 
         self.assertEqual(proj.version, '4.8.2')
-        mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
+        mock_write_file.assert_called_with('x', 'CMakeLists.txt',
                                            cmake_content_extended.format('4.8.2'))
 
     @patch('release_tool.cmake._write_file')
@@ -129,8 +128,7 @@ project(project-name-1
         proj = _mock_load()
         proj.set_new_version("0.1.2")
         self.assertEqual("0.1.2", proj.version)
-        mock_write_file.assert_called_with(proj.path, 'CMakeLists.txt',
-                                           CMAKE_CONTENT.format('0.1.2'))
+        mock_write_file.assert_called_with('x', 'CMakeLists.txt', CMAKE_CONTENT.format('0.1.2'))
 
     def test_current_version(self):
         proj = _mock_load()
