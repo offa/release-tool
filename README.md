@@ -12,7 +12,7 @@ Tool to create project releases of CMake based projects.
 1. Update Repository
     1. Commit version change
     1. Tag new version
-
+1. *(Optional)* Set next version
 
 ## Usage
 

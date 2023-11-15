@@ -21,7 +21,7 @@ import sys
 from release_tool.version import __version__
 from release_tool.release_exception import ReleaseException
 from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
-    UpdateVersionStep, CommitAndTagStep
+    UpdateVersionStep, CommitAndTagStep, SetNextVersion
 
 
 def parse_args():
@@ -42,6 +42,7 @@ def parse_args():
                         '-m',
                         type=str,
                         help="Commit and Tag message (use '$v' for version)")
+    parser.add_argument('--next-version', '-n', type=str, help='Set next version')
 
     return parser.parse_args()
 
@@ -50,11 +51,13 @@ def main():
     args = parse_args()
     new_version = args.release_version
 
+    steps = [PreconditionStep(), UpdateVersionStep(), CommitAndTagStep(args.message)]
+
+    if args.next_version:
+        steps.append(SetNextVersion(args.next_version))
+
     try:
-        cycle = ReleaseCycle.from_path(
-            args.path, [PreconditionStep(),
-                        UpdateVersionStep(),
-                        CommitAndTagStep(args.message)])
+        cycle = ReleaseCycle.from_path(args.path, steps)
         cycle.create_release(new_version)
     except ReleaseException as ex:
         print(f"ERROR: {ex}")

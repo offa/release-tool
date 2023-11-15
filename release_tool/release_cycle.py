@@ -56,6 +56,17 @@ class CommitAndTagStep:
         repo.create_tag(f"v{new_version}", message=commit_message)
 
 
+class SetNextVersion:
+
+    def __init__(self, next_version):
+        self.__next_version = next_version
+
+    def execute(self, proj, repo, _new_version):
+        proj.set_new_version(self.__next_version)
+        repo.index.add([proj.PROJECT_CONFIG])
+        repo.index.commit("Prepare next iteration")
+
+
 class ReleaseCycle:
 
     def __init__(self, proj, repo, steps):

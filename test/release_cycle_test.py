@@ -21,7 +21,7 @@ import git
 from release_tool.cmake import CMakeProject
 from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
     UpdateVersionStep, CommitAndTagStep, ConditionFailedException, \
-    UnsupportedProjectException
+    UnsupportedProjectException, SetNextVersion
 
 
 class TestReleaseCycle(unittest.TestCase):
@@ -146,6 +146,19 @@ class TestCommitAndTagStep(unittest.TestCase):
         repo.index.commit.assert_called_once_with("Custom message for version '1.2.3'")
         repo.create_tag.assert_called_once_with("v1.2.3",
                                                 message="Custom message for version '1.2.3'")
+
+
+class TestSetNextVersion(unittest.TestCase):
+
+    def test_sets_next_version_with_commit(self):
+        proj, repo = _create_mocks("0.0.1")
+
+        step = SetNextVersion("0.2.0")
+        step.execute(proj, repo, "0.1.3")
+
+        proj.set_new_version.assert_called_once_with("0.2.0")
+        repo.index.add.assert_called_once_with([proj.PROJECT_CONFIG])
+        repo.index.commit.assert_called_once_with("Prepare next iteration")
 
 
 def _create_mocks(version):
