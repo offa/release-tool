@@ -1,6 +1,6 @@
 # release-tool - Tool to create project releases
 #
-# Copyright (C) 2019-2023  offa
+# Copyright (C) 2019-2024  offa
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
