@@ -19,14 +19,15 @@ import os
 import re
 
 
-class CMakeProject():
-    __PATTERN = r'project\s*\((.+?)\)'
+class CMakeProject:
+    __PATTERN = r"project\s*\((.+?)\)"
     PROJECT_CONFIG = "CMakeLists.txt"
 
     def __init__(self, proj_dir):
         self.__proj_dir = proj_dir
         project_args = self.__parse_project_arguments(
-            _load_file(self.__proj_dir, self.PROJECT_CONFIG))
+            _load_file(self.__proj_dir, self.PROJECT_CONFIG)
+        )
         self.__name = project_args[0].strip()
         self.__version = project_args[_index_of(project_args, "VERSION") + 1].strip()
 
@@ -47,10 +48,12 @@ class CMakeProject():
         suffix = "\n" if project_args[idx].endswith(("\n", "\r")) else ""
         project_args[idx] = self.__version + suffix
 
-        result = re.sub(self.__PATTERN,
-                        f"project({' '.join(project_args)})",
-                        content,
-                        flags=re.DOTALL)
+        result = re.sub(
+            self.__PATTERN,
+            f"project({' '.join(project_args)})",
+            content,
+            flags=re.DOTALL,
+        )
         _write_file(self.__proj_dir, self.PROJECT_CONFIG, result)
 
     def __parse_project_arguments(self, input_string, keep_whitespaces=False):
@@ -67,10 +70,10 @@ def _index_of(args, name):
 
 
 def _load_file(path, filename):
-    with open(os.path.join(path, filename), 'r', encoding="utf-8") as file:
+    with open(os.path.join(path, filename), "r", encoding="utf-8") as file:
         return file.read()
 
 
 def _write_file(path, filename, content):
-    with open(os.path.join(path, filename), 'w', encoding="utf-8") as file:
+    with open(os.path.join(path, filename), "w", encoding="utf-8") as file:
         file.write(content)

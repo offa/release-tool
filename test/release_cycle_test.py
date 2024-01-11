@@ -19,24 +19,30 @@ import unittest
 from unittest.mock import MagicMock, Mock, call, patch
 import git
 from release_tool.cmake import CMakeProject
-from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
-    UpdateVersionStep, CommitAndTagStep, ConditionFailedException, \
-    UnsupportedProjectException, SetNextVersion
+from release_tool.release_cycle import (
+    ReleaseCycle,
+    PreconditionStep,
+    UpdateVersionStep,
+    CommitAndTagStep,
+    ConditionFailedException,
+    UnsupportedProjectException,
+    SetNextVersion,
+)
 
 
 class TestReleaseCycle(unittest.TestCase):
-
-    @patch('os.path.isfile', return_value=True)
+    @patch("os.path.isfile", return_value=True)
     def test_project_and_repository_from_path(self, mock):
-        with patch.object(git.Repo, "__init__", lambda p0, p1: None), \
-                patch.object(CMakeProject, "__init__", lambda p0, p1: None):
+        with patch.object(git.Repo, "__init__", lambda p0, p1: None), patch.object(
+            CMakeProject, "__init__", lambda p0, p1: None
+        ):
             cycle = ReleaseCycle.from_path("/tmp/cmake_project", [MagicMock()])
             mock.assert_called_once_with("/tmp/cmake_project/CMakeLists.txt")
             self.assertIsInstance(cycle.project, CMakeProject)
             self.assertIsInstance(cycle.repository, git.Repo)
             self.assertEqual(1, cycle.number_of_steps())
 
-    @patch('os.path.isfile', return_value=False)
+    @patch("os.path.isfile", return_value=False)
     def test_from_path_throws_if_no_project_file(self, mock):
         with patch.object(git.Repo, "__init__", lambda p0, p1: None):
             with self.assertRaises(UnsupportedProjectException):
@@ -61,14 +67,18 @@ class TestReleaseCycle(unittest.TestCase):
 
         expected_args = (proj, repo, "6.7.8")
         manager = Mock()
-        (manager.step_0, manager.step_1, manager.step_2) = (steps[0], steps[1], steps[2])
+        (manager.step_0, manager.step_1, manager.step_2) = (
+            steps[0],
+            steps[1],
+            steps[2],
+        )
 
         cycle.create_release("6.7.8")
 
         expected_calls = [
             call.step_0.execute(*expected_args),
             call.step_1.execute(*expected_args),
-            call.step_2.execute(*expected_args)
+            call.step_2.execute(*expected_args),
         ]
         self.assertEqual(expected_calls, manager.mock_calls)
 
@@ -84,7 +94,6 @@ class TestReleaseCycle(unittest.TestCase):
 
 
 class TestPreconditionStep(unittest.TestCase):
-
     def test_passes_if_repo_not_dirty(self):
         proj, repo = _create_mocks("0.1.2")
         repo.is_dirty = MagicMock(return_value=False)
@@ -117,7 +126,6 @@ class TestPreconditionStep(unittest.TestCase):
 
 
 class TestUpdateVersionStep(unittest.TestCase):
-
     def test_sets_new_version(self):
         proj, repo = _create_mocks("0.0.1")
 
@@ -127,7 +135,6 @@ class TestUpdateVersionStep(unittest.TestCase):
 
 
 class TestCommitAndTagStep(unittest.TestCase):
-
     def test_commits_changes_and_creates_tag(self):
         proj, repo = _create_mocks("1.2.3")
 
@@ -144,12 +151,12 @@ class TestCommitAndTagStep(unittest.TestCase):
         step.execute(proj, repo, "1.2.3")
         repo.index.add.assert_called_once_with([proj.PROJECT_CONFIG])
         repo.index.commit.assert_called_once_with("Custom message for version '1.2.3'")
-        repo.create_tag.assert_called_once_with("v1.2.3",
-                                                message="Custom message for version '1.2.3'")
+        repo.create_tag.assert_called_once_with(
+            "v1.2.3", message="Custom message for version '1.2.3'"
+        )
 
 
 class TestSetNextVersion(unittest.TestCase):
-
     def test_sets_next_version_with_commit(self):
         proj, repo = _create_mocks("0.0.1")
 

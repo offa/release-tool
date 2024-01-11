@@ -20,29 +20,38 @@ import os
 import sys
 from release_tool.version import __version__
 from release_tool.release_exception import ReleaseException
-from release_tool.release_cycle import ReleaseCycle, PreconditionStep, \
-    UpdateVersionStep, CommitAndTagStep, SetNextVersion
+from release_tool.release_cycle import (
+    ReleaseCycle,
+    PreconditionStep,
+    UpdateVersionStep,
+    CommitAndTagStep,
+    SetNextVersion,
+)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(prog="release-tool", description='Performs releases')
-    required = parser.add_argument_group('arguments')
-    required.add_argument('--release-version',
-                          '-r',
-                          type=str,
-                          required=True,
-                          help='Version to release')
-    parser.add_argument('--version',
-                        '-v',
-                        action='version',
-                        version=f"%(prog)s {__version__}",
-                        help='Shows the program version')
-    parser.add_argument('path', nargs='?', default=os.getcwd())
-    parser.add_argument('--message',
-                        '-m',
-                        type=str,
-                        help="Commit and Tag message (use '$v' for version)")
-    parser.add_argument('--next-version', '-n', type=str, help='Set next version')
+    parser = argparse.ArgumentParser(
+        prog="release-tool", description="Performs releases"
+    )
+    required = parser.add_argument_group("arguments")
+    required.add_argument(
+        "--release-version", "-r", type=str, required=True, help="Version to release"
+    )
+    parser.add_argument(
+        "--version",
+        "-v",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        help="Shows the program version",
+    )
+    parser.add_argument("path", nargs="?", default=os.getcwd())
+    parser.add_argument(
+        "--message",
+        "-m",
+        type=str,
+        help="Commit and Tag message (use '$v' for version)",
+    )
+    parser.add_argument("--next-version", "-n", type=str, help="Set next version")
 
     return parser.parse_args()
 
@@ -64,5 +73,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

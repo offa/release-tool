@@ -30,7 +30,6 @@ class ConditionFailedException(ReleaseException):
 
 
 class PreconditionStep:
-
     def execute(self, proj, repo, new_version):
         if repo.is_dirty():
             raise ConditionFailedException("The project contains uncommited changes")
@@ -39,13 +38,11 @@ class PreconditionStep:
 
 
 class UpdateVersionStep:
-
     def execute(self, proj, _repo, new_version):
         proj.set_new_version(new_version)
 
 
 class CommitAndTagStep:
-
     def __init__(self, message=None):
         self.__message = message if message else "Release v$v"
 
@@ -57,7 +54,6 @@ class CommitAndTagStep:
 
 
 class SetNextVersion:
-
     def __init__(self, next_version):
         self.__next_version = next_version
 
@@ -68,7 +64,6 @@ class SetNextVersion:
 
 
 class ReleaseCycle:
-
     def __init__(self, proj, repo, steps):
         self.__proj = proj
         self.__repo = repo
