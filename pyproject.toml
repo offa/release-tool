@@ -28,7 +28,7 @@ releasetool = "release_tool.__main__:main"
 dev = [
     "pylint == 3.0.3",
     "pytest == 7.4.4",
-    "yapf == 0.40.2"
+    "ruff == 0.1.11"
 ]
 
 [build-system]
@@ -39,10 +39,4 @@ version = {attr = "release_tool.version.__version__"}
 
 [tool.setuptools.packages.find]
 include = ["release_tool"]
-
-[tool.yapf]
-based_on_style = "pep8"
-spaces_before_comment = 4
-split_before_logical_operator = true
-column_limit = 100
 
