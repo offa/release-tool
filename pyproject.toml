@@ -28,7 +28,7 @@ releasetool = "release_tool.__main__:main"
 dev = [
     "pylint == 3.1.0",
     "pytest == 8.2.0",
-    "ruff == 0.4.3"
+    "ruff == 0.4.4"
 ]
 
 [build-system]
