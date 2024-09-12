@@ -3,7 +3,7 @@
 [![CI](https://github.com/offa/release-tool/workflows/ci/badge.svg)](https://github.com/offa/release-tool/actions)
 [![GitHub release](https://img.shields.io/github/release/offa/release-tool.svg)](https://github.com/offa/release-tool/releases)
 [![License](https://img.shields.io/badge/license-GPLv3-yellow.svg)](LICENSE)
-![Python 3.8](https://img.shields.io/badge/python-3.8-green.svg)
+![Python 3.9](https://img.shields.io/badge/python-3.9-green.svg)
 
 Tool to create project releases of CMake based projects.
 
