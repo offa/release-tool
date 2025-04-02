@@ -5,7 +5,7 @@ authors = [{name = "offa"}]
 description = "Tool to create project releases."
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 dependencies = [
     "GitPython == 3.1.44"
 ]
