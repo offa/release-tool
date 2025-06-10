@@ -27,7 +27,7 @@ releasetool = "release_tool.__main__:main"
 [project.optional-dependencies]
 dev = [
     "pylint == 3.3.7",
-    "pytest == 8.3.5",
+    "pytest == 8.4.0",
     "ruff == 0.11.13"
 ]
 
