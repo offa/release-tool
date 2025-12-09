@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import abc
 import git
 from release_tool.cmake import CMakeProject
 from release_tool.release_exception import ReleaseException
@@ -29,48 +30,54 @@ class ConditionFailedException(ReleaseException):
     pass
 
 
-class PreconditionStep:
-    def execute(self, proj, repo, new_version):
+class Step(abc.ABC):
+    @abc.abstractmethod
+    def execute(self, proj, repo: git.Repo, new_version: str) -> None:
+        raise NotImplementedError
+
+
+class PreconditionStep(Step):
+    def execute(self, proj, repo: git.Repo, new_version: str) -> None:
         if repo.is_dirty():
             raise ConditionFailedException("The project contains uncommited changes")
         if proj.version == new_version:
             raise ConditionFailedException("Version already up-to-date")
 
 
-class UpdateVersionStep:
-    def execute(self, proj, _repo, new_version):
+class UpdateVersionStep(Step):
+    def execute(self, proj, repo: git.Repo, new_version: str) -> None:
         proj.set_new_version(new_version)
 
 
-class CommitAndTagStep:
-    def __init__(self, message=None):
+class CommitAndTagStep(Step):
+    def __init__(self, message: str | None = None) -> None:
         self.__message = message if message else "Release v$v"
 
-    def execute(self, proj, repo, new_version):
+    def execute(self, proj, repo: git.Repo, new_version: str) -> None:
         commit_message = self.__message.replace("$v", new_version)
         repo.index.add([proj.PROJECT_CONFIG])
         repo.index.commit(commit_message)
         repo.create_tag(f"v{new_version}", message=commit_message)
 
 
-class SetNextVersion:
-    def __init__(self, next_version):
+class SetNextVersion(Step):
+    def __init__(self, next_version: str) -> None:
         self.__next_version = next_version
 
-    def execute(self, proj, repo, _new_version):
+    def execute(self, proj, repo: git.Repo, new_version: str) -> None:
         proj.set_new_version(self.__next_version)
         repo.index.add([proj.PROJECT_CONFIG])
         repo.index.commit("Prepare next iteration")
 
 
 class ReleaseCycle:
-    def __init__(self, proj, repo, steps):
+    def __init__(self, proj, repo: git.Repo, steps: list) -> None:
         self.__proj = proj
         self.__repo = repo
         self.__steps = steps
 
     @classmethod
-    def from_path(cls, path, steps):
+    def from_path(cls, path: str, steps: list):
         repo = git.Repo(path)
 
         if os.path.isfile(os.path.join(path, CMakeProject.PROJECT_CONFIG)):
@@ -78,18 +85,18 @@ class ReleaseCycle:
             return cls(proj, repo, steps)
         raise UnsupportedProjectException(f"'{path}' no supported project found")
 
-    def number_of_steps(self):
+    def number_of_steps(self) -> int:
         return len(self.__steps)
 
     @property
-    def repository(self):
+    def repository(self) -> git.Repo:
         return self.__repo
 
     @property
     def project(self):
         return self.__proj
 
-    def create_release(self, new_version):
+    def create_release(self, new_version: str):
         version = new_version.strip()
         for step in self.__steps:
             step.execute(self.__proj, self.__repo, version)

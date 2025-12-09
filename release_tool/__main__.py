@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from argparse import Namespace
 import argparse
 import os
 import sys
@@ -26,10 +27,11 @@ from release_tool.release_cycle import (
     UpdateVersionStep,
     CommitAndTagStep,
     SetNextVersion,
+    Step,
 )
 
 
-def parse_args():
+def parse_args() -> Namespace:
     parser = argparse.ArgumentParser(
         prog="release-tool", description="Performs releases"
     )
@@ -60,7 +62,11 @@ def main():
     args = parse_args()
     new_version = args.release_version
 
-    steps = [PreconditionStep(), UpdateVersionStep(), CommitAndTagStep(args.message)]
+    steps: list[Step] = [
+        PreconditionStep(),
+        UpdateVersionStep(),
+        CommitAndTagStep(args.message),
+    ]
 
     if args.next_version:
         steps.append(SetNextVersion(args.next_version))
