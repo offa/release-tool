@@ -28,11 +28,21 @@ class TestCMakeProject(unittest.TestCase):
     @patch(
         "release_tool.cmake._load_file", return_value=CMAKE_CONTENT.format("1.23.456")
     )
-    def test_parse_project_config_parses_values(self, _mock_load_file):
+    def test_parse_project_config_parses_values(self, _mock_load_file) -> None:
         proj = CMakeProject("abc")
 
         self.assertEqual(proj.name, "TestProj")
         self.assertEqual(proj.version, "1.23.456")
+
+    @patch(
+        "release_tool.cmake._load_file",
+        return_value="cmake_minimum_required(VERSION 3.14)\n\nproject()\n\n",
+    )
+    def test_parse_project_config_raises_on_invalid_project_values(
+        self, _mock_load_file
+    ) -> None:
+        with self.assertRaises(ValueError):
+            CMakeProject("abc")
 
     @patch(
         "release_tool.cmake._load_file",
@@ -46,13 +56,15 @@ project(project-name-1
 )
 """,
     )
-    def test_parse_project_config_parses_values_multiline(self, _mock_load_file):
+    def test_parse_project_config_parses_values_multiline(
+        self, _mock_load_file
+    ) -> None:
         proj = CMakeProject("abc")
 
         self.assertEqual(proj.name, "project-name-1")
         self.assertEqual(proj.version, "1.16.7")
 
-    def test_parse_project_config_handles_whitespaces(self):
+    def test_parse_project_config_handles_whitespaces(self) -> None:
         content_ws = (
             "cmake_minimum_required(VERSION 3.14)\n\n"
             "  \n \t project  (\n\n\t TestProj \n  \nVERSION \n {} \n)\n\n"
@@ -66,7 +78,7 @@ project(project-name-1
         self.assertEqual(proj.name, "TestProj")
         self.assertEqual(proj.version, "395.18.20")
 
-    def test_parse_project_config_handles_additional_arguments(self):
+    def test_parse_project_config_handles_additional_arguments(self) -> None:
         content_ws = (
             "cmake_minimum_required(VERSION 3.14)\n\n"
             'project(TestProj DESCRIPTION "text" VERSION {} LANGUAGES CXX C)'
@@ -81,7 +93,7 @@ project(project-name-1
         self.assertEqual(proj.version, "1.18.203")
 
     @patch("release_tool.cmake._load_file", return_value=CMAKE_CONTENT.format("1.41.5"))
-    def test_load_reads_data(self, mock_load_file):
+    def test_load_reads_data(self, mock_load_file) -> None:
         proj = CMakeProject("x/proj-a")
 
         self.assertEqual(proj.version, "1.41.5")
@@ -91,7 +103,9 @@ project(project-name-1
 
     @patch("release_tool.cmake._write_file")
     @patch("release_tool.cmake._load_file", return_value=CMAKE_CONTENT.format("0.0.1"))
-    def test_set_new_version_writes_data(self, _mock_load_file, mock_write_file):
+    def test_set_new_version_writes_data(
+        self, _mock_load_file, mock_write_file
+    ) -> None:
         proj = _mock_load()
         proj.set_new_version("1.9.10")
 
@@ -101,7 +115,7 @@ project(project-name-1
         )
 
     @patch("release_tool.cmake._write_file")
-    def test_set_new_version_keeps_formatting(self, mock_write_file):
+    def test_set_new_version_keeps_formatting(self, mock_write_file) -> None:
         proj = _mock_load()
 
         cmake_content_extended = """
@@ -148,7 +162,7 @@ project(project-name-1
     @patch("release_tool.cmake._load_file", return_value=CMAKE_CONTENT.format("0.1.2"))
     def test_set_new_version_without_change_doesnt_change(
         self, _mock_load_file, mock_write_file
-    ):
+    ) -> None:
         proj = _mock_load()
         proj.set_new_version("0.1.2")
         self.assertEqual("0.1.2", proj.version)
@@ -156,13 +170,13 @@ project(project-name-1
             "x", "CMakeLists.txt", CMAKE_CONTENT.format("0.1.2")
         )
 
-    def test_current_version(self):
+    def test_current_version(self) -> None:
         proj = _mock_load()
 
         self.assertEqual(proj.version, "0.1.2")
 
 
-def _mock_load():
+def _mock_load() -> CMakeProject:
     with patch(
         "release_tool.cmake._load_file", return_value=CMAKE_CONTENT.format("0.1.2")
     ):

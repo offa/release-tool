@@ -23,7 +23,7 @@ class CMakeProject:
     __PATTERN = r"project\s*\((.+?)\)"
     PROJECT_CONFIG = "CMakeLists.txt"
 
-    def __init__(self, proj_dir):
+    def __init__(self, proj_dir: str) -> None:
         self.__proj_dir = proj_dir
         project_args = self.__parse_project_arguments(
             _load_file(self.__proj_dir, self.PROJECT_CONFIG)
@@ -32,14 +32,14 @@ class CMakeProject:
         self.__version = project_args[_index_of(project_args, "VERSION") + 1].strip()
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__name
 
     @property
-    def version(self):
+    def version(self) -> str:
         return self.__version
 
-    def set_new_version(self, new_version):
+    def set_new_version(self, new_version: str) -> None:
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
         project_args = self.__parse_project_arguments(content, True)
         self.__version = new_version
@@ -56,24 +56,28 @@ class CMakeProject:
         )
         _write_file(self.__proj_dir, self.PROJECT_CONFIG, result)
 
-    def __parse_project_arguments(self, input_string, keep_whitespaces=False):
+    def __parse_project_arguments(
+        self, input_string: str, keep_whitespaces: bool = False
+    ) -> list[str]:
         match = re.search(self.__PATTERN, input_string, re.DOTALL)
+        if not match:
+            raise ValueError(f"Invalid project(...): '{input_string}'")
         args = match.group(1).split(" ")
         return args if keep_whitespaces else [token for token in args if token.strip()]
 
 
-def _index_of(args, name):
+def _index_of(args, name: str):
     for element in args:
         if element.strip() == name:
             return args.index(element)
     raise ValueError(f"No element '{name}' found in '{args}'")
 
 
-def _load_file(path, filename):
+def _load_file(path: str, filename: str) -> str:
     with open(os.path.join(path, filename), "r", encoding="utf-8") as file:
         return file.read()
 
 
-def _write_file(path, filename, content):
+def _write_file(path: str, filename: str, content: str) -> None:
     with open(os.path.join(path, filename), "w", encoding="utf-8") as file:
         file.write(content)
