@@ -109,7 +109,7 @@ class TestPreconditionStep(unittest.TestCase):
         repo.is_dirty = MagicMock(return_value=True)
 
         step = PreconditionStep()
-        with self.assertRaises(Exception):
+        with self.assertRaises(ConditionFailedException):
             step.execute(proj, repo, "0.1.3")
 
     def test_passes_if_different_version(self) -> None:
