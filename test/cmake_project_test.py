@@ -17,6 +17,7 @@
 
 import unittest
 from unittest.mock import patch
+
 from release_tool.cmake import CMakeProject
 
 CMAKE_CONTENT = (

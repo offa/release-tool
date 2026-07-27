@@ -17,16 +17,18 @@
 
 import unittest
 from unittest.mock import MagicMock, Mock, call, patch
+
 import git
+
 from release_tool.cmake import CMakeProject
 from release_tool.release_cycle import (
-    ReleaseCycle,
-    PreconditionStep,
-    UpdateVersionStep,
     CommitAndTagStep,
     ConditionFailedException,
-    UnsupportedProjectException,
+    PreconditionStep,
+    ReleaseCycle,
     SetNextVersion,
+    UnsupportedProjectException,
+    UpdateVersionStep,
 )
 
 

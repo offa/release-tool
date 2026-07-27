@@ -15,20 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from argparse import Namespace
 import argparse
 import os
 import sys
-from release_tool.version import __version__
-from release_tool.release_exception import ReleaseException
+from argparse import Namespace
+
 from release_tool.release_cycle import (
-    ReleaseCycle,
-    PreconditionStep,
-    UpdateVersionStep,
     CommitAndTagStep,
+    PreconditionStep,
+    ReleaseCycle,
     SetNextVersion,
     Step,
+    UpdateVersionStep,
 )
+from release_tool.release_exception import ReleaseException
+from release_tool.version import __version__
 
 
 def parse_args() -> Namespace:
