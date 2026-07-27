@@ -47,9 +47,11 @@ class TestReleaseCycle(unittest.TestCase):
 
     @patch("os.path.isfile", return_value=False)
     def test_from_path_throws_if_no_project_file(self, mock) -> None:
-        with patch.object(git.Repo, "__init__", lambda p0, p1: None):
-            with self.assertRaises(UnsupportedProjectException):
-                ReleaseCycle.from_path("/tmp/cmake_project", [MagicMock()])
+        with (
+            patch.object(git.Repo, "__init__", lambda p0, p1: None),
+            self.assertRaises(UnsupportedProjectException),
+        ):
+            ReleaseCycle.from_path("/tmp/cmake_project", [MagicMock()])
         mock.assert_called_once_with("/tmp/cmake_project/CMakeLists.txt")
 
     def test_step_executed(self) -> None:
