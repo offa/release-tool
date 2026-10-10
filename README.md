@@ -7,6 +7,8 @@
 
 Tool to create project releases of CMake based projects.
 
+The release process involves these steps:
+
 1. Check for uncommitted files
 1. Update version info
 1. Update Repository
