@@ -279,11 +279,14 @@ project(project-name-1
     ) -> None:
         proj = _mock_load()
 
-        with patch(
-            "release_tool.cmake._load_file",
-            return_value="cmake_minimum_required(VERSION 3.14)\n"
-            "project(TestProj VERSION)\n",
-        ), self.assertRaises(ValueError):
+        with (
+            patch(
+                "release_tool.cmake._load_file",
+                return_value="cmake_minimum_required(VERSION 3.14)\n"
+                "project(TestProj VERSION)\n",
+            ),
+            self.assertRaises(ValueError),
+        ):
             proj.set_new_version("4.8.2")
 
         self.assertEqual(proj.version, "0.1.2")
@@ -295,11 +298,14 @@ project(project-name-1
     ) -> None:
         proj = _mock_load()
 
-        with patch(
-            "release_tool.cmake._load_file",
-            return_value="cmake_minimum_required(VERSION 3.14)\n"
-            "project(TestProj VERSION # comment\n {})\n".format("1.2.3"),
-        ), self.assertRaises(ValueError):
+        with (
+            patch(
+                "release_tool.cmake._load_file",
+                return_value="cmake_minimum_required(VERSION 3.14)\n"
+                "project(TestProj VERSION # comment\n {})\n".format("1.2.3"),
+            ),
+            self.assertRaises(ValueError),
+        ):
             proj.set_new_version("4.8.2")
 
         self.assertEqual(proj.version, "0.1.2")
