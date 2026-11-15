@@ -302,7 +302,7 @@ project(project-name-1
             patch(
                 "release_tool.cmake._load_file",
                 return_value="cmake_minimum_required(VERSION 3.14)\n"
-                "project(TestProj VERSION # comment\n {})\n".format("1.2.3"),
+                "project(TestProj VERSION # comment\n 1.2.3)\n",
             ),
             self.assertRaises(ValueError),
         ):
