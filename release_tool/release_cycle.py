@@ -17,6 +17,7 @@
 
 import abc
 import os
+import re
 
 import git
 
@@ -42,8 +43,23 @@ class Step(abc.ABC):
         raise NotImplementedError
 
 
+_RELEASE_VERSION_RE = re.compile(r"^[0-9][A-Za-z0-9.+-]*$")
+
+
+def _is_valid_version(version: str) -> bool:
+    return _RELEASE_VERSION_RE.match(version) is not None
+
+
+def _check_version(value: str, label: str) -> None:
+    if not _is_valid_version(value):
+        raise ConditionFailedException(
+            f"Invalid {label} '{value}': expected a version like '1.2.3' or '1.2.3-dev'"
+        )
+
+
 class PreconditionStep(Step):
     def execute(self, proj, repo: git.Repo, new_version: str) -> None:
+        _check_version(new_version, "version")
         if repo.is_dirty():
             raise ConditionFailedException("The project contains uncommited changes")
         if proj.version == new_version:
@@ -71,6 +87,7 @@ class SetNextVersion(Step):
         self.__next_version = next_version
 
     def execute(self, proj, repo: git.Repo, new_version: str) -> None:
+        _check_version(self.__next_version, "next version")
         proj.set_new_version(self.__next_version)
         repo.index.add([_config_path(proj, repo)])
         repo.index.commit("Prepare next iteration")

@@ -129,6 +129,57 @@ class TestPreconditionStep(unittest.TestCase):
         with self.assertRaises(ConditionFailedException):
             step.execute(proj, repo, "0.1.2")
 
+    def test_fails_if_version_format_is_invalid(self) -> None:
+        proj, repo = _create_mocks("0.1.2")
+        repo.is_dirty = MagicMock(return_value=False)
+
+        step = PreconditionStep()
+        with self.assertRaises(ConditionFailedException):
+            step.execute(proj, repo, "not-a-version")
+
+    def test_fails_if_version_has_a_v_prefix(self) -> None:
+        proj, repo = _create_mocks("0.1.2")
+        repo.is_dirty = MagicMock(return_value=False)
+
+        step = PreconditionStep()
+        with self.assertRaises(ConditionFailedException):
+            step.execute(proj, repo, "v0.1.3")
+
+    def test_fails_if_version_is_empty(self) -> None:
+        proj, repo = _create_mocks("0.1.2")
+        repo.is_dirty = MagicMock(return_value=False)
+
+        step = PreconditionStep()
+        with self.assertRaises(ConditionFailedException):
+            step.execute(proj, repo, "")
+
+    def test_fails_if_version_contains_whitespace(self) -> None:
+        proj, repo = _create_mocks("0.1.2")
+        repo.is_dirty = MagicMock(return_value=False)
+
+        step = PreconditionStep()
+        with self.assertRaises(ConditionFailedException):
+            step.execute(proj, repo, "1.2 3")
+
+    def test_passes_for_valid_version_formats(self) -> None:
+        proj, repo = _create_mocks("0.1.2")
+        repo.is_dirty = MagicMock(return_value=False)
+
+        step = PreconditionStep()
+        for version in (
+            "1",
+            "12",
+            "1.2",
+            "1.2.3",
+            "1.2.3.4.5",
+            "1.2.3-dev",
+            "1.2-rc3",
+            "34.5676",
+            "59.5939dev0",
+        ):
+            with self.subTest(version=version):
+                step.execute(proj, repo, version)
+
 
 class TestUpdateVersionStep(unittest.TestCase):
     def test_sets_new_version(self) -> None:
@@ -184,6 +235,17 @@ class TestSetNextVersion(unittest.TestCase):
         proj.set_new_version.assert_called_once_with("0.2.0")
         repo.index.add.assert_called_once_with(["CMakeLists.txt"])
         repo.index.commit.assert_called_once_with("Prepare next iteration")
+
+    def test_raises_if_next_version_format_is_invalid(self) -> None:
+        proj, repo = _create_mocks("0.0.1")
+        _set_config_paths(proj, repo)
+
+        step = SetNextVersion("v0.2.0")
+        with self.assertRaises(ConditionFailedException):
+            step.execute(proj, repo, "0.1.3")
+
+        proj.set_new_version.assert_not_called()
+        repo.index.add.assert_not_called()
 
 
 def _create_mocks(version: str) -> tuple[MagicMock, MagicMock]:
