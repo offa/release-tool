@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import unittest
 from unittest.mock import patch
 
@@ -176,6 +177,11 @@ project(project-name-1
         proj = _mock_load()
 
         self.assertEqual(proj.version, "0.1.2")
+
+    def test_config_file_is_absolute_path(self) -> None:
+        proj = _mock_load()
+
+        self.assertEqual(proj.config_file, os.path.abspath("x/CMakeLists.txt"))
 
     @patch("release_tool.cmake._write_file")
     def test_set_new_version_with_trailing_space_after_version_keyword(

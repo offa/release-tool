@@ -39,6 +39,10 @@ class CMakeProject:
     def version(self) -> str:
         return self.__version
 
+    @property
+    def config_file(self) -> str:
+        return os.path.abspath(os.path.join(self.__proj_dir, self.PROJECT_CONFIG))
+
     def set_new_version(self, new_version: str) -> None:
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
         match = re.search(self.__PATTERN, content, re.DOTALL)

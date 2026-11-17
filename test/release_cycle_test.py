@@ -142,34 +142,47 @@ class TestUpdateVersionStep(unittest.TestCase):
 class TestCommitAndTagStep(unittest.TestCase):
     def test_commits_changes_and_creates_tag(self) -> None:
         proj, repo = _create_mocks("1.2.3")
+        _set_config_paths(proj, repo)
 
         step = CommitAndTagStep()
         step.execute(proj, repo, "1.2.3")
-        repo.index.add.assert_called_once_with([proj.PROJECT_CONFIG])
+        repo.index.add.assert_called_once_with(["CMakeLists.txt"])
         repo.index.commit.assert_called_once_with("Release v1.2.3")
         repo.create_tag.assert_called_once_with("v1.2.3", message="Release v1.2.3")
 
     def test_commits_changes_and_creates_tag_with_message(self) -> None:
         proj, repo = _create_mocks("1.2.3")
+        _set_config_paths(proj, repo)
 
         step = CommitAndTagStep("Custom message for version '$v'")
         step.execute(proj, repo, "1.2.3")
-        repo.index.add.assert_called_once_with([proj.PROJECT_CONFIG])
+        repo.index.add.assert_called_once_with(["CMakeLists.txt"])
         repo.index.commit.assert_called_once_with("Custom message for version '1.2.3'")
         repo.create_tag.assert_called_once_with(
             "v1.2.3", message="Custom message for version '1.2.3'"
         )
 
+    def test_commits_config_of_subdirectory_project(self) -> None:
+        proj, repo = _create_mocks("1.2.3")
+        proj.config_file = "/repo/example/project/CMakeLists.txt"
+        repo.working_dir = "/repo"
+
+        step = CommitAndTagStep()
+        step.execute(proj, repo, "1.2.3")
+
+        repo.index.add.assert_called_once_with(["example/project/CMakeLists.txt"])
+
 
 class TestSetNextVersion(unittest.TestCase):
     def test_sets_next_version_with_commit(self) -> None:
         proj, repo = _create_mocks("0.0.1")
+        _set_config_paths(proj, repo)
 
         step = SetNextVersion("0.2.0")
         step.execute(proj, repo, "0.1.3")
 
         proj.set_new_version.assert_called_once_with("0.2.0")
-        repo.index.add.assert_called_once_with([proj.PROJECT_CONFIG])
+        repo.index.add.assert_called_once_with(["CMakeLists.txt"])
         repo.index.commit.assert_called_once_with("Prepare next iteration")
 
 
@@ -178,3 +191,8 @@ def _create_mocks(version: str) -> tuple[MagicMock, MagicMock]:
     repo = MagicMock()
     proj.version = version
     return (proj, repo)
+
+
+def _set_config_paths(proj: MagicMock, repo: MagicMock) -> None:
+    proj.config_file = "/repo/CMakeLists.txt"
+    repo.working_dir = "/repo"
