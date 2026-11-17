@@ -32,6 +32,10 @@ class ConditionFailedException(ReleaseException):
     pass
 
 
+def _config_path(proj, repo: git.Repo) -> str:
+    return os.path.relpath(proj.config_file, repo.working_dir)
+
+
 class Step(abc.ABC):
     @abc.abstractmethod
     def execute(self, proj, repo: git.Repo, new_version: str) -> None:
@@ -57,7 +61,7 @@ class CommitAndTagStep(Step):
 
     def execute(self, proj, repo: git.Repo, new_version: str) -> None:
         commit_message = self.__message.replace("$v", new_version)
-        repo.index.add([proj.PROJECT_CONFIG])
+        repo.index.add([_config_path(proj, repo)])
         repo.index.commit(commit_message)
         repo.create_tag(f"v{new_version}", message=commit_message)
 
@@ -68,7 +72,7 @@ class SetNextVersion(Step):
 
     def execute(self, proj, repo: git.Repo, new_version: str) -> None:
         proj.set_new_version(self.__next_version)
-        repo.index.add([proj.PROJECT_CONFIG])
+        repo.index.add([_config_path(proj, repo)])
         repo.index.commit("Prepare next iteration")
 
 
