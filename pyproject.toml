@@ -32,6 +32,9 @@ dev = [
     "ruff == 0.17.5"
 ]
 
+[tool.ruff]
+line-length = 88
+
 [build-system]
 requires = ["setuptools"]
 

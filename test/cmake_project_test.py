@@ -145,7 +145,8 @@ project(project-name-1
 
         cmake_content_extended = (
             "cmake_minimum_required(VERSION 3.14)\n"
-            'project(TestProj LANGUAGES CXX VERSION {} DESCRIPTION "Additional values here")'
+            "project(TestProj LANGUAGES CXX VERSION {} "
+            'DESCRIPTION "Additional values here")'
         )
 
         with patch(
