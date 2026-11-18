@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import unittest
 from unittest.mock import patch
 
@@ -25,7 +26,7 @@ CMAKE_CONTENT = (
 )
 
 
-class TestCMakeProject(unittest.TestCase):
+class TestCMakeProject(unittest.TestCase):  # pylint: disable=too-many-public-methods
     @patch(
         "release_tool.cmake._load_file", return_value=CMAKE_CONTENT.format("1.23.456")
     )
@@ -40,6 +41,28 @@ class TestCMakeProject(unittest.TestCase):
         return_value="cmake_minimum_required(VERSION 3.14)\n\nproject()\n\n",
     )
     def test_parse_project_config_raises_on_invalid_project_values(
+        self, _mock_load_file
+    ) -> None:
+        with self.assertRaises(ValueError):
+            CMakeProject("abc")
+
+    @patch(
+        "release_tool.cmake._load_file",
+        return_value="cmake_minimum_required(VERSION 3.14)\n\nproject( )\n\n",
+    )
+    def test_parse_project_config_raises_on_missing_project_name(
+        self, _mock_load_file
+    ) -> None:
+        with self.assertRaises(ValueError):
+            CMakeProject("abc")
+
+    @patch(
+        "release_tool.cmake._load_file",
+        return_value=(
+            "cmake_minimum_required(VERSION 3.14)\n\nproject(TestProj VERSION )\n\n"
+        ),
+    )
+    def test_parse_project_config_raises_on_missing_version_value(
         self, _mock_load_file
     ) -> None:
         with self.assertRaises(ValueError):
@@ -140,12 +163,13 @@ project(project-name-1
         )
 
     @patch("release_tool.cmake._write_file")
-    def test_set_new_version_keeps_existing_values(self, mock_write_file):
+    def test_set_new_version_keeps_existing_values(self, mock_write_file) -> None:
         proj = _mock_load()
 
         cmake_content_extended = (
             "cmake_minimum_required(VERSION 3.14)\n"
-            'project(TestProj LANGUAGES CXX VERSION {} DESCRIPTION "Additional values here")'
+            "project(TestProj LANGUAGES CXX VERSION {} "
+            'DESCRIPTION "Additional values here")'
         )
 
         with patch(
@@ -175,6 +199,163 @@ project(project-name-1
         proj = _mock_load()
 
         self.assertEqual(proj.version, "0.1.2")
+
+    def test_config_file_is_absolute_path(self) -> None:
+        proj = _mock_load()
+
+        self.assertEqual(proj.config_file, os.path.abspath("x/CMakeLists.txt"))
+
+    @patch("release_tool.cmake._write_file")
+    def test_set_new_version_with_trailing_space_after_version_keyword(
+        self, mock_write_file
+    ) -> None:
+        proj = _mock_load()
+
+        cmake_content = (
+            "cmake_minimum_required(VERSION 3.14)\nproject(TestProj VERSION \n  {})\n"
+        )
+        with patch(
+            "release_tool.cmake._load_file",
+            return_value=cmake_content.format("1.2.3"),
+        ):
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, "4.8.2")
+        mock_write_file.assert_called_with(
+            "x", "CMakeLists.txt", cmake_content.format("4.8.2")
+        )
+
+    @patch("release_tool.cmake._write_file")
+    def test_set_new_version_with_multiple_spaces_after_version_keyword(
+        self, mock_write_file
+    ) -> None:
+        proj = _mock_load()
+
+        cmake_content = (
+            "cmake_minimum_required(VERSION 3.14)\nproject(TestProj VERSION   {})\n"
+        )
+        with patch(
+            "release_tool.cmake._load_file",
+            return_value=cmake_content.format("1.2.3"),
+        ):
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, "4.8.2")
+        mock_write_file.assert_called_with(
+            "x", "CMakeLists.txt", cmake_content.format("4.8.2")
+        )
+
+    @patch("release_tool.cmake._write_file")
+    def test_set_new_version_with_version_on_next_line(self, mock_write_file) -> None:
+        proj = _mock_load()
+
+        cmake_content = (
+            "cmake_minimum_required(VERSION 3.14)\nproject(TestProj\n  VERSION\n  {})\n"
+        )
+        with patch(
+            "release_tool.cmake._load_file",
+            return_value=cmake_content.format("1.2.3"),
+        ):
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, "4.8.2")
+        mock_write_file.assert_called_with(
+            "x", "CMakeLists.txt", cmake_content.format("4.8.2")
+        )
+
+    @patch("release_tool.cmake._write_file")
+    def test_set_new_version_with_tab_before_version_value(
+        self, mock_write_file
+    ) -> None:
+        proj = _mock_load()
+
+        cmake_content = (
+            "cmake_minimum_required(VERSION 3.14)\nproject(TestProj VERSION \n\t{})\n"
+        )
+        with patch(
+            "release_tool.cmake._load_file",
+            return_value=cmake_content.format("1.2.3"),
+        ):
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, "4.8.2")
+        mock_write_file.assert_called_with(
+            "x", "CMakeLists.txt", cmake_content.format("4.8.2")
+        )
+
+    @patch("release_tool.cmake._write_file")
+    def test_set_new_version_with_glued_next_keyword(self, mock_write_file) -> None:
+        proj = _mock_load()
+
+        cmake_content = (
+            "cmake_minimum_required(VERSION 3.14)\n"
+            "project(TestProj VERSION {}\nLANGUAGES CXX)\n"
+        )
+        with patch(
+            "release_tool.cmake._load_file",
+            return_value=cmake_content.format("1.2.3"),
+        ):
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, "4.8.2")
+        mock_write_file.assert_called_with(
+            "x", "CMakeLists.txt", cmake_content.format("4.8.2")
+        )
+
+    @patch("release_tool.cmake._write_file")
+    def test_set_new_version_raises_if_version_has_no_value(
+        self, mock_write_file
+    ) -> None:
+        proj = _mock_load()
+
+        with (
+            patch(
+                "release_tool.cmake._load_file",
+                return_value="cmake_minimum_required(VERSION 3.14)\n"
+                "project(TestProj VERSION)\n",
+            ),
+            self.assertRaises(ValueError),
+        ):
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, "0.1.2")
+        mock_write_file.assert_not_called()
+
+    @patch("release_tool.cmake._write_file")
+    def test_set_new_version_raises_if_comment_follows_version_keyword(
+        self, mock_write_file
+    ) -> None:
+        proj = _mock_load()
+
+        with (
+            patch(
+                "release_tool.cmake._load_file",
+                return_value="cmake_minimum_required(VERSION 3.14)\n"
+                "project(TestProj VERSION # comment\n 1.2.3)\n",
+            ),
+            self.assertRaises(ValueError),
+        ):
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, "0.1.2")
+        mock_write_file.assert_not_called()
+
+    def test_set_new_version_roundtrip_with_messy_whitespace(self) -> None:
+        original = (
+            "cmake_minimum_required(VERSION 3.14)\n\n"
+            "  \n \t project  (\n\n\t TestProj \n  \nVERSION \n 1.2.3 \n)\n\n"
+        )
+        updated = original.replace("1.2.3", "4.8.2")
+
+        with (
+            patch("release_tool.cmake._load_file", return_value=original),
+            patch("release_tool.cmake._write_file") as mock_write_file,
+        ):
+            proj = CMakeProject("abc")
+            proj.set_new_version("4.8.2")
+
+        self.assertEqual(proj.version, "4.8.2")
+        mock_write_file.assert_called_with("abc", "CMakeLists.txt", updated)
 
 
 def _mock_load() -> CMakeProject:

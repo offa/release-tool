@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/license-GPLv3-yellow.svg)](LICENSE)
 ![Python 3.10](https://img.shields.io/badge/python-3.10-green.svg)
 
-Tool to create project releases of CMake based projects.
+Tool to create project releases of CMake-based projects.
 
 The release process involves these steps:
 

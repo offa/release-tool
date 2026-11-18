@@ -29,7 +29,7 @@ class CMakeProject:
             _load_file(self.__proj_dir, self.PROJECT_CONFIG)
         )
         self.__name = project_args[0].strip()
-        self.__version = project_args[_index_of(project_args, "VERSION") + 1].strip()
+        self.__version = project_args[_index_of_version_value(project_args)].strip()
 
     @property
     def name(self) -> str:
@@ -39,38 +39,59 @@ class CMakeProject:
     def version(self) -> str:
         return self.__version
 
+    @property
+    def config_file(self) -> str:
+        return os.path.abspath(os.path.join(self.__proj_dir, self.PROJECT_CONFIG))
+
     def set_new_version(self, new_version: str) -> None:
         content = _load_file(self.__proj_dir, self.PROJECT_CONFIG)
-        project_args = self.__parse_project_arguments(content, True)
+        match = re.search(self.__PATTERN, content, re.DOTALL)
+        if match is None:
+            raise ValueError(f"Invalid project(...): '{content}'")
+
+        project_args = match.group(1).split(" ")
+        idx = _index_of_version_value(project_args)
+        project_args[idx] = _replace_version_value(project_args[idx], new_version)
         self.__version = new_version
 
-        idx = _index_of(project_args, "VERSION") + 1
-        suffix = "\n" if project_args[idx].endswith(("\n", "\r")) else ""
-        project_args[idx] = self.__version + suffix
-
-        result = re.sub(
-            self.__PATTERN,
-            f"project({' '.join(project_args)})",
-            content,
-            flags=re.DOTALL,
+        result = (
+            content[: match.start(1)] + " ".join(project_args) + content[match.end(1) :]
         )
         _write_file(self.__proj_dir, self.PROJECT_CONFIG, result)
 
-    def __parse_project_arguments(
-        self, input_string: str, keep_whitespaces: bool = False
-    ) -> list[str]:
+    def __parse_project_arguments(self, input_string: str) -> list[str]:
         match = re.search(self.__PATTERN, input_string, re.DOTALL)
         if not match:
             raise ValueError(f"Invalid project(...): '{input_string}'")
         args = match.group(1).split(" ")
-        return args if keep_whitespaces else [token for token in args if token.strip()]
+        tokens = [token for token in args if token.strip()]
+        if not tokens:
+            raise ValueError("No project name found in project(...)")
+        return tokens
 
 
-def _index_of(args, name: str):
-    for element in args:
+def _index_of(args: list[str], name: str) -> int:
+    for index, element in enumerate(args):
         if element.strip() == name:
-            return args.index(element)
+            return index
     raise ValueError(f"No element '{name}' found in '{args}'")
+
+
+def _index_of_version_value(args: list[str]) -> int:
+    idx = _index_of(args, "VERSION") + 1
+    while idx < len(args) and args[idx].strip() == "":
+        idx += 1
+    if idx >= len(args):
+        raise ValueError("No version value found after 'VERSION' keyword")
+    if args[idx].strip().startswith("#"):
+        raise ValueError("Expected version value after 'VERSION' keyword")
+    return idx
+
+
+def _replace_version_value(token: str, new_version: str) -> str:
+    return re.sub(
+        r"^(\s*)\S+", lambda _match: _match.group(1) + new_version, token, count=1
+    )
 
 
 def _load_file(path: str, filename: str) -> str:
