@@ -100,7 +100,7 @@ class ReleaseCycle:
         self.__steps = steps
 
     @classmethod
-    def from_path(cls, path: str, steps: list[Step]) -> ReleaseCycle:
+    def from_path(cls, path: str, steps: list[Step]) -> "ReleaseCycle":
         repo = git.Repo(path)
 
         if os.path.isfile(os.path.join(path, CMakeProject.PROJECT_CONFIG)):
