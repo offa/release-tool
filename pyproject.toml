@@ -32,6 +32,11 @@ dev = [
     "ruff == 0.17.5"
 ]
 
+[tool.pyrefly]
+project-includes = [
+    "**/*.py*",
+]
+
 [tool.ruff]
 line-length = 88
 
