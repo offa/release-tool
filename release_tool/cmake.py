@@ -70,10 +70,10 @@ class CMakeProject:
         return tokens
 
 
-def _index_of(args, name: str):
-    for element in args:
+def _index_of(args: list[str], name: str) -> int:
+    for index, element in enumerate(args):
         if element.strip() == name:
-            return args.index(element)
+            return index
     raise ValueError(f"No element '{name}' found in '{args}'")
 
 
