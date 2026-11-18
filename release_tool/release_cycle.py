@@ -106,7 +106,7 @@ class ReleaseCycle:
         if os.path.isfile(os.path.join(path, CMakeProject.PROJECT_CONFIG)):
             proj = CMakeProject(path)
             return cls(proj, repo, steps)
-        raise UnsupportedProjectException(f"'{path}' no supported project found")
+        raise UnsupportedProjectException(f"no supported project found at '{path}'")
 
     def number_of_steps(self) -> int:
         return len(self.__steps)
