@@ -26,7 +26,7 @@ CMAKE_CONTENT = (
 )
 
 
-class TestCMakeProject(unittest.TestCase):
+class TestCMakeProject(unittest.TestCase):  # pylint: disable=too-many-public-methods
     @patch(
         "release_tool.cmake._load_file", return_value=CMAKE_CONTENT.format("1.23.456")
     )
