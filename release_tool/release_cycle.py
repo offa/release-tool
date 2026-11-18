@@ -84,10 +84,10 @@ class CommitAndTagStep(Step):
 
 class SetNextVersion(Step):
     def __init__(self, next_version: str) -> None:
+        _check_version(next_version, "next version")
         self.__next_version = next_version
 
     def execute(self, proj, repo: git.Repo, new_version: str) -> None:
-        _check_version(self.__next_version, "next version")
         proj.set_new_version(self.__next_version)
         repo.index.add([_config_path(proj, repo)])
         repo.index.commit("Prepare next iteration")
