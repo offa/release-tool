@@ -59,20 +59,20 @@ def parse_args() -> Namespace:
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
     new_version = args.release_version
 
-    steps: list[Step] = [
-        PreconditionStep(),
-        UpdateVersionStep(),
-        CommitAndTagStep(args.message),
-    ]
-
-    if args.next_version:
-        steps.append(SetNextVersion(args.next_version))
-
     try:
+        steps: list[Step] = [
+            PreconditionStep(),
+            UpdateVersionStep(),
+            CommitAndTagStep(args.message),
+        ]
+
+        if args.next_version:
+            steps.append(SetNextVersion(args.next_version))
+
         cycle = ReleaseCycle.from_path(args.path, steps)
         cycle.create_release(new_version)
     except ReleaseException as ex:

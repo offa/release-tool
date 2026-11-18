@@ -237,15 +237,8 @@ class TestSetNextVersion(unittest.TestCase):
         repo.index.commit.assert_called_once_with("Prepare next iteration")
 
     def test_raises_if_next_version_format_is_invalid(self) -> None:
-        proj, repo = _create_mocks("0.0.1")
-        _set_config_paths(proj, repo)
-
-        step = SetNextVersion("v0.2.0")
         with self.assertRaises(ConditionFailedException):
-            step.execute(proj, repo, "0.1.3")
-
-        proj.set_new_version.assert_not_called()
-        repo.index.add.assert_not_called()
+            SetNextVersion("v0.2.0")
 
 
 def _create_mocks(version: str) -> tuple[MagicMock, MagicMock]:
