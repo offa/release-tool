@@ -163,7 +163,7 @@ project(project-name-1
         )
 
     @patch("release_tool.cmake._write_file")
-    def test_set_new_version_keeps_existing_values(self, mock_write_file):
+    def test_set_new_version_keeps_existing_values(self, mock_write_file) -> None:
         proj = _mock_load()
 
         cmake_content_extended = (
