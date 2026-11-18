@@ -48,6 +48,28 @@ class TestCMakeProject(unittest.TestCase):
 
     @patch(
         "release_tool.cmake._load_file",
+        return_value="cmake_minimum_required(VERSION 3.14)\n\nproject( )\n\n",
+    )
+    def test_parse_project_config_raises_on_missing_project_name(
+        self, _mock_load_file
+    ) -> None:
+        with self.assertRaises(ValueError):
+            CMakeProject("abc")
+
+    @patch(
+        "release_tool.cmake._load_file",
+        return_value=(
+            "cmake_minimum_required(VERSION 3.14)\n\nproject(TestProj VERSION )\n\n"
+        ),
+    )
+    def test_parse_project_config_raises_on_missing_version_value(
+        self, _mock_load_file
+    ) -> None:
+        with self.assertRaises(ValueError):
+            CMakeProject("abc")
+
+    @patch(
+        "release_tool.cmake._load_file",
         return_value="""
 cmake_minimum_required(VERSION 3.15)
 
