@@ -26,7 +26,7 @@ CMAKE_CONTENT = (
 )
 
 
-class TestCMakeProject(unittest.TestCase):
+class TestCMakeProject(unittest.TestCase):  # pylint: disable=too-many-public-methods
     @patch(
         "release_tool.cmake._load_file", return_value=CMAKE_CONTENT.format("1.23.456")
     )
@@ -41,6 +41,28 @@ class TestCMakeProject(unittest.TestCase):
         return_value="cmake_minimum_required(VERSION 3.14)\n\nproject()\n\n",
     )
     def test_parse_project_config_raises_on_invalid_project_values(
+        self, _mock_load_file
+    ) -> None:
+        with self.assertRaises(ValueError):
+            CMakeProject("abc")
+
+    @patch(
+        "release_tool.cmake._load_file",
+        return_value="cmake_minimum_required(VERSION 3.14)\n\nproject( )\n\n",
+    )
+    def test_parse_project_config_raises_on_missing_project_name(
+        self, _mock_load_file
+    ) -> None:
+        with self.assertRaises(ValueError):
+            CMakeProject("abc")
+
+    @patch(
+        "release_tool.cmake._load_file",
+        return_value=(
+            "cmake_minimum_required(VERSION 3.14)\n\nproject(TestProj VERSION )\n\n"
+        ),
+    )
+    def test_parse_project_config_raises_on_missing_version_value(
         self, _mock_load_file
     ) -> None:
         with self.assertRaises(ValueError):

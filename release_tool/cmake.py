@@ -29,7 +29,7 @@ class CMakeProject:
             _load_file(self.__proj_dir, self.PROJECT_CONFIG)
         )
         self.__name = project_args[0].strip()
-        self.__version = project_args[_index_of(project_args, "VERSION") + 1].strip()
+        self.__version = project_args[_index_of_version_value(project_args)].strip()
 
     @property
     def name(self) -> str:
@@ -64,7 +64,10 @@ class CMakeProject:
         if not match:
             raise ValueError(f"Invalid project(...): '{input_string}'")
         args = match.group(1).split(" ")
-        return [token for token in args if token.strip()]
+        tokens = [token for token in args if token.strip()]
+        if not tokens:
+            raise ValueError("No project name found in project(...)")
+        return tokens
 
 
 def _index_of(args, name: str):
