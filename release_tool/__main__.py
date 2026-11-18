@@ -20,6 +20,8 @@ import os
 import sys
 from argparse import Namespace
 
+import git
+
 from release_tool.release_cycle import (
     CommitAndTagStep,
     PreconditionStep,
@@ -75,7 +77,7 @@ def main() -> None:
 
         cycle = ReleaseCycle.from_path(args.path, steps)
         cycle.create_release(new_version)
-    except ReleaseException as ex:
+    except (ReleaseException, git.GitError, ValueError, OSError) as ex:
         print(f"ERROR: {ex}")
         sys.exit(1)
 
